@@ -20,6 +20,6 @@ public class MyResource {
     @GET
     @Produces(MediaType.TEXT_PLAIN)
     public String getIt() {
-        return "tttt : VAPE NASH YALL -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-**---****-";
+        return "1";
     }
 }
