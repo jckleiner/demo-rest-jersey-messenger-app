@@ -2,15 +2,17 @@ package com.greydev.messenger_demo.model;
 
 import java.util.Date;
 
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
 public class Message {
 
-	private String author;
+	@XmlElement
+	private Date created;
 	private Long id;
 	private String text;
-	private Date created;
+	private String author;
 	
 	public Message() {
 	}
@@ -30,12 +32,12 @@ public class Message {
 		this.id = id;
 	}
 
-	public void setText(String text) {
-		this.text = text;
-	}
-
 	public Date getCreated() {
 		return created;
+	}
+
+	public void setText(String text) {
+		this.text = text;
 	}
 
 	public String getAuthor() {
@@ -49,5 +51,5 @@ public class Message {
 	public String getText() {
 		return text;
 	}
-
+	
 }
