@@ -20,6 +20,6 @@ public class MyResource {
     @GET
     @Produces(MediaType.TEXT_PLAIN)
     public String getIt() {
-        return "deleted some stuff";
+        return "deleted some stuff asdasdasd";
     }
 }
