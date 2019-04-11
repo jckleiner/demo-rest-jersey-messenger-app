@@ -27,11 +27,10 @@ public class MessageService {
 		return DatabaseMock.getMessage(id);
 	}
 	
-	public void addMessage(Message message) throws DatabaseOperationException {
-		Message response = DatabaseMock.addMessage(getNextId(), message);
-		if (response == null) {
-			throw new DatabaseOperationException();
-		}
+	public Message addMessage(Message message)  {
+		Message newMessage = new Message(getNextId(), message.getAuthor(), message.getText());
+		DatabaseMock.addMessage(newMessage.getId(), newMessage);
+		return newMessage;
 	}
 	
 	public void deleteMessage(Long id) throws DatabaseOperationException {
