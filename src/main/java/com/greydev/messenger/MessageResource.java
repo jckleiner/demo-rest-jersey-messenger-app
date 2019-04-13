@@ -12,6 +12,9 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.greydev.messenger.exception.DatabaseOperationException;
 import com.greydev.messenger.model.Message;
 import com.greydev.messenger.service.MessageService;
@@ -25,6 +28,10 @@ public class MessageResource {
 	
 	@GET
 	public List<Message> getAllMessages() {
+		
+		Logger logger = LoggerFactory.getLogger(MessageService.class);
+    logger.info("Hello World");
+
 		System.out.println("GET: getAllMessages");
 		return messageService.getAllMessages();
 	}
