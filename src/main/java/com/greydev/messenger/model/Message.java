@@ -1,4 +1,4 @@
-package com.greydev.messenger_demo.model;
+package com.greydev.messenger.model;
 
 import java.util.Date;
 

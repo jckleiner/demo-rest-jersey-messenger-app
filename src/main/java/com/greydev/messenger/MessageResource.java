@@ -1,4 +1,4 @@
-package com.greydev.messenger_demo;
+package com.greydev.messenger;
 
 import java.util.List;
 
@@ -12,9 +12,9 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import com.greydev.messenger_demo.exception.DatabaseOperationException;
-import com.greydev.messenger_demo.model.Message;
-import com.greydev.messenger_demo.service.MessageService;
+import com.greydev.messenger.exception.DatabaseOperationException;
+import com.greydev.messenger.model.Message;
+import com.greydev.messenger.service.MessageService;
 
 @Path("/messages")
 @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })

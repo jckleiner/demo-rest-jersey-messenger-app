@@ -1,12 +1,12 @@
-package com.greydev.messenger_demo.mockdb;
+package com.greydev.messenger.mockdb;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.greydev.messenger_demo.model.Message;
-import com.greydev.messenger_demo.model.Profile;
+import com.greydev.messenger.model.Message;
+import com.greydev.messenger.model.Profile;
 
 public class DatabaseMock {
 	

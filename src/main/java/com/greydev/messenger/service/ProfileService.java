@@ -1,13 +1,13 @@
-package com.greydev.messenger_demo.service;
+package com.greydev.messenger.service;
 
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.greydev.messenger_demo.exception.DatabaseOperationException;
-import com.greydev.messenger_demo.mockdb.DatabaseMock;
-import com.greydev.messenger_demo.model.Message;
-import com.greydev.messenger_demo.model.Profile;
+import com.greydev.messenger.exception.DatabaseOperationException;
+import com.greydev.messenger.mockdb.DatabaseMock;
+import com.greydev.messenger.model.Message;
+import com.greydev.messenger.model.Profile;
 
 public class ProfileService {
 	
