@@ -21,8 +21,8 @@ public class DatabaseMock {
 		return messageMap.get(id);
 	}
 	
-	public static Message addMessage(Long id, Message message) {
-		return messageMap.put(id, message);
+	public static void addMessage(Long id, Message message) {
+		messageMap.put(id, message);
 	}
 	
 	public static Message deleteMessage(Long id) {

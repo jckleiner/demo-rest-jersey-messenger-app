@@ -2,6 +2,8 @@ package com.greydev.messenger_demo.service;
 
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.greydev.messenger_demo.exception.DatabaseOperationException;
 import com.greydev.messenger_demo.mockdb.DatabaseMock;
 import com.greydev.messenger_demo.model.Message;
@@ -33,18 +35,27 @@ public class MessageService {
 		return newMessage;
 	}
 	
-	public void deleteMessage(Long id) throws DatabaseOperationException {
+	public Message deleteMessage(Long id) throws DatabaseOperationException {
 		Message response = DatabaseMock.deleteMessage(id);
+		// Send back a message 'message with requested id is not found'
 		if (response == null) {
 			throw new DatabaseOperationException();
 		}
+		return response;
 	}
 	
-	public void updateMessage(Message message) throws DatabaseOperationException {
-		Message response = DatabaseMock.updateMessage(message);
-		if (response == null) {
-			throw new DatabaseOperationException();
-		}
+	public Message updateMessage(Message message) throws DatabaseOperationException {
+		DatabaseMock.updateMessage(message);
+		return message;
+	}
+
+	// mandatory properties: Author, Text
+	public boolean isMessageValid(Message message) {
+		return StringUtils.isNoneBlank(message.getAuthor(), message.getText());
+	}
+	
+	public boolean doesIdExist(Long id) {
+		return (DatabaseMock.getMessage(id) != null);
 	}
 	
 
