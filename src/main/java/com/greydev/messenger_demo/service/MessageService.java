@@ -26,13 +26,43 @@ public class MessageService {
 	}
 	
 	public Message getMessage(Long id) {
-		return DatabaseMock.getMessage(id);
+		Message message = DatabaseMock.getMessage(id);
+		
+		//TODO if no message is found, return a proper exception message
+		if (message == null) {
+			return new Message(888L, "ERROR", "id is not found");
+		}
+		else {
+			System.out.println(" -> returning: " + message.getAuthor() + ", " + message.getText());
+		}
+		return message;
 	}
 	
 	public Message addMessage(Message message)  {
 		Message newMessage = new Message(getNextId(), message.getAuthor(), message.getText());
-		DatabaseMock.addMessage(newMessage.getId(), newMessage);
-		return newMessage;
+		
+		if (isMessageValid(newMessage)) {
+			DatabaseMock.addMessage(newMessage.getId(), newMessage);
+			return newMessage;
+		}
+		//TODO if the message is not valid, return a proper exception message
+		return new Message(111L, "ERROR", "Invalid message, some properties are missing");
+	}
+
+	public Message updateMessage(Long messageId, Message message) throws DatabaseOperationException {
+		message.setId(messageId);
+		// ignore the id inside the received message, use the url param id
+		// TODO proper exception
+		if (isMessageValid(message)) {
+			if (doesMessageExist(message.getId())) {
+				return DatabaseMock.updateMessage(message);
+			}
+			else {
+				DatabaseMock.addMessage(message.getId(), message);
+				return message;
+			}
+		}
+		return new Message(111L, "ERROR", "Invalid message, some properties are missing");
 	}
 	
 	public Message deleteMessage(Long id) throws DatabaseOperationException {
@@ -43,21 +73,15 @@ public class MessageService {
 		}
 		return response;
 	}
-	
-	public Message updateMessage(Message message) throws DatabaseOperationException {
-		DatabaseMock.updateMessage(message);
-		return message;
-	}
 
 	// mandatory properties: Author, Text
 	public boolean isMessageValid(Message message) {
 		return StringUtils.isNoneBlank(message.getAuthor(), message.getText());
 	}
 	
-	public boolean doesIdExist(Long id) {
+	public boolean doesMessageExist(Long id) {
 		return (DatabaseMock.getMessage(id) != null);
 	}
-	
 
 	private static long getNextId() {
 		return idCount++;

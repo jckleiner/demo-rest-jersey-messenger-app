@@ -30,9 +30,10 @@ public class ProfileResource {
 	}
 
 	@GET
-	@Path("/{profileId}")
-	public Profile getProfile(@PathParam("profileId") Long profileId) {
-		System.out.print("GET: getProfile(id: " + profileId + ")");
+	@Path("/{profileName}")
+	public Profile getProfile(@PathParam("profileName") String profileName) {
+		System.out.print("GET: getProfile(name: " + profileName + ")");
+		profileService.getProfile(profileName);
 		return null;
 	}
 
@@ -43,17 +44,17 @@ public class ProfileResource {
 	}
 
 	@PUT
-	@Path("/{profileId}")
-	public Profile updateProfile(@PathParam("profileId") Long profileId, Profile profile)
+	@Path("/{profileName}")
+	public Profile updateProfile(@PathParam("profileName") String profileName, Profile profile)
 			throws DatabaseOperationException {
-		System.out.println("PUT: updateProfile(id: " + profileId + ")");
+		System.out.println("PUT: updateProfile(Name: " + profileName + ")");
 		return null;
 	}
 
 	@DELETE
-	@Path("/{profileId}")
-	public Profile deleteProfile(@PathParam("profileId") Long profileId) throws DatabaseOperationException {
-		System.out.println("DELETE: deleteProfile(id: " + profileId + ")");
+	@Path("/{profileName}")
+	public Profile deleteProfile(@PathParam("profileName") String profileName) throws DatabaseOperationException {
+		System.out.println("DELETE: deleteProfile(Name: " + profileName + ")");
 		return null;
 	}
 
