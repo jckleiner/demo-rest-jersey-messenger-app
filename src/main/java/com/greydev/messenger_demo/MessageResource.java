@@ -17,12 +17,13 @@ import com.greydev.messenger_demo.model.Message;
 import com.greydev.messenger_demo.service.MessageService;
 
 @Path("/messages")
+@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 public class MessageResource {
 	
 	private static final MessageService messageService= new MessageService();
 	
 	@GET
-	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	public List<Message> getAllMessages() {
 		System.out.println("GET: getAllMessages");
 		return messageService.getAllMessages();
@@ -30,7 +31,6 @@ public class MessageResource {
 	
 	@GET
 	@Path("/{messageId}")
-	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	public Message getMessage(@PathParam("messageId") Long messageId) {
 		System.out.print("GET: getMessage(id: " + messageId + ")");
 		Message message = messageService.getMessage(messageId);
@@ -46,8 +46,6 @@ public class MessageResource {
 	}
 	
 	@POST
-	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	public Message addMessage(Message message) throws DatabaseOperationException {
 		System.out.println("POST: addMessage(message: " + message.getAuthor() + ", " + message.getText() + ")");
 		if (messageService.isMessageValid(message)) {
@@ -59,8 +57,6 @@ public class MessageResource {
 	
 	@PUT
 	@Path("/{messageId}")
-	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	public Message updateMessage(@PathParam("messageId") Long messageId, Message message) throws DatabaseOperationException {
 		System.out.println("PUT: updateMessage(id: " + messageId + ")");
 		message.setId(messageId);
@@ -80,7 +76,6 @@ public class MessageResource {
 	
 	@DELETE
 	@Path("/{messageId}")
-	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	public Message deleteMessage(@PathParam("messageId") Long messageId) throws DatabaseOperationException {
 		System.out.println("DELETE: deleteMessage(id: " + messageId + ")");
 		return messageService.deleteMessage(messageId);

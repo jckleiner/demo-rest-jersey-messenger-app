@@ -6,11 +6,12 @@ import java.util.List;
 import java.util.Map;
 
 import com.greydev.messenger_demo.model.Message;
+import com.greydev.messenger_demo.model.Profile;
 
 public class DatabaseMock {
 	
 	private static final Map<Long, Message> messageMap = new HashMap<>();
-//	private static final Map<Long, Profile> messageMap = new HashMap<>();
+	private static final Map<String, Profile> profileMap = new HashMap<>();
 	
 	
 	public static List<Message> getAllMessages() {
@@ -31,6 +32,28 @@ public class DatabaseMock {
 	
 	public static Message updateMessage(Message message) {
 		return messageMap.replace(message.getId(), message);
+	}
+	
+	// **************************************************
+	
+	public static List<Profile> getAllProfiles() {
+		return new ArrayList<Profile>(profileMap.values());
+	}
+	
+	public static Profile getProfile(String profileName) {
+		return profileMap.get(profileName);
+	}
+	
+	public static void addProfile(String profileName, Profile profile) {
+		profileMap.put(profileName, profile);
+	}
+	
+	public static Profile deleteProfile(String profileName) {
+		return profileMap.remove(profileName);
+	}
+	
+	public static Profile updateProfile(Profile profile) {
+		return profileMap.replace(profile.getProfileName(), profile);
 	}
 	
 
