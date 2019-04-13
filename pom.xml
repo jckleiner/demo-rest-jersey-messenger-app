@@ -38,17 +38,27 @@
     </dependencyManagement>
 
     <dependencies>
+    
         <dependency>
             <groupId>org.glassfish.jersey.containers</groupId>
             <artifactId>jersey-container-servlet-core</artifactId>
             <!-- use the following artifactId if you don't need servlet 2.x compatibility -->
             <!-- artifactId>jersey-container-servlet</artifactId -->
         </dependency>
+        
         <!-- uncomment this to get JSON support -->
         <dependency>
             <groupId>org.glassfish.jersey.media</groupId>
             <artifactId>jersey-media-moxy</artifactId>
         </dependency>
+        
+        <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-lang3 -->
+				<dependency>
+				    <groupId>org.apache.commons</groupId>
+				    <artifactId>commons-lang3</artifactId>
+				    <version>3.8.1</version>
+				</dependency>
+
     </dependencies>
     <properties>
         <jersey.version>2.16</jersey.version>
