@@ -15,7 +15,7 @@ public class MessageService {
 	// saving some dummy messages to the database
 	static {
 		Message message1 = new Message(getNextId(), "Can123", "Such a lovely weather today!");
-		Message message2 = new Message(getNextId(), "Ahmet", "I own a grocery store!");
+		Message message2 = new Message(getNextId(), "Ahmet123", "I own a grocery store!");
 
 		DatabaseMock.addMessage(message1.getId(), message1);
 		DatabaseMock.addMessage(message2.getId(), message2);
