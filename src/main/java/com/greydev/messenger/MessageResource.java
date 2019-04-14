@@ -4,12 +4,14 @@ import java.util.List;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 import org.slf4j.Logger;
@@ -27,8 +29,27 @@ public class MessageResource {
 	private static final Logger LOG = LoggerFactory.getLogger(MessageResource.class);
 	private static final MessageService messageService= new MessageService();
 	
+	/*
+	 *  If queryParams are not given or given incorrectly with a different type, 
+	 *  they default to 0, null, false...
+	 *  User defined types can be passed as parameters but the type needs to fulfill
+	 *  some conditions, see jersey docs. Else it returns 404.
+	 *  Default values can be added to @*Param variables
+	 */
 	@GET
-	public List<Message> getAllMessages() {
+	public List<Message> getAllMessages(
+			@QueryParam("year") int year,
+			@QueryParam("myBoolean") boolean myBoolean,
+			@DefaultValue("defaultValue") @QueryParam("myString") String myString) {
+		
+		LOG.info("myBoolean: {}", myBoolean);
+		LOG.info("myString: {}", myString);
+		
+		if (year != 0) {
+			LOG.info("YEAR PARAM IS GIVEN AS: {}", year);
+			return messageService.getAllMessagesForYear(year);
+		}
+		
 		LOG.info("GET: getAllMessages");
 		return messageService.getAllMessages();
 	}
@@ -59,5 +80,5 @@ public class MessageResource {
 		LOG.info("DELETE: deleteMessage(id: {})", messageId);
 		return messageService.deleteMessage(messageId);
 	}
-
+	
 }

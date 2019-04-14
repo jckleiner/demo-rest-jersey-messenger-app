@@ -25,6 +25,14 @@ public class Profile {
 		this.lastName = lastName;
 		this.created = new Date();
 	}
+	
+	public Profile(String profileName, String firstName, String lastName, Date date) {
+		super();
+		this.profileName = profileName;
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.created = date;
+	}
 
 	public String getProfileName() {
 		return profileName;
@@ -52,6 +60,10 @@ public class Profile {
 
 	public Date getCreated() {
 		return created;
+	}
+	
+	public void setCreated(Date date) {
+		created = date;
 	}
 
 }

@@ -1,5 +1,7 @@
 package com.greydev.messenger.service;
 
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
@@ -17,9 +19,10 @@ public class MessageService {
 
 	// saving some dummy messages to the database
 	static {
-		Message message1 = new Message(getNextId(), "Can", "Such a lovely weather today!");
+		Message message1 = new Message(getNextId(), "Can", "Such a lovely weather today!",
+				new GregorianCalendar(2015, 11, 11));
 		Message message2 = new Message(getNextId(), "Ahmet", "I own a grocery store!");
-
+		
 		DatabaseMock.addMessage(message1.getId(), message1);
 		DatabaseMock.addMessage(message2.getId(), message2);
 	}
@@ -73,6 +76,22 @@ public class MessageService {
 			throw new DatabaseOperationException();
 		}
 		return response;
+	}
+	
+	public List<Message> getAllMessagesForYear(int year) {
+		int currentYear = Calendar.getInstance().get(Calendar.YEAR);
+		
+		if (year > currentYear) {
+			LOG.info("passed year parameter is not valid");
+			return null;
+		}
+		return DatabaseMock.getAllMessagesForYear(year);
+	}
+	
+	public List<Message> getAllMessagesPaginated(int start, int size) {
+		
+		
+		return null;
 	}
 
 	// mandatory properties: Author, Text
