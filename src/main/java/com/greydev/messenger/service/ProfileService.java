@@ -90,4 +90,5 @@ public class ProfileService {
 	public boolean doesProfileNameExist(String profileName) {
 		return (DatabaseMock.getProfile(profileName) != null);
 	}
+	
 }
