@@ -1,6 +1,6 @@
 package com.greydev.messenger.model;
 
-import java.util.Date;
+import java.util.GregorianCalendar;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -9,7 +9,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class Message {
 
 	@XmlElement
-	private Date created;
+	private GregorianCalendar created;
 	private Long id;
 	private String text;
 	private String author;
@@ -21,7 +21,14 @@ public class Message {
 		this.author = author;
 		this.id = id;
 		this.text = text;
-		this.created = new Date();
+		this.created = new GregorianCalendar();
+	}
+	
+	public Message(Long id, String author, String text, GregorianCalendar date) {
+		this.author = author;
+		this.id = id;
+		this.text = text;
+		this.created = date;
 	}
 
 	public void setAuthor(String author) {
@@ -32,7 +39,7 @@ public class Message {
 		this.id = id;
 	}
 
-	public Date getCreated() {
+	public GregorianCalendar getCreated() {
 		return created;
 	}
 
@@ -50,6 +57,10 @@ public class Message {
 
 	public String getText() {
 		return text;
+	}
+	
+	public void setCreated(GregorianCalendar date) {
+		created = date;
 	}
 	
 }

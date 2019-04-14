@@ -1,6 +1,7 @@
 package com.greydev.messenger.mockdb;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,6 +33,18 @@ public class DatabaseMock {
 	
 	public static Message updateMessage(Message message) {
 		return messageMap.replace(message.getId(), message);
+	}
+	
+	public static List<Message> getAllMessagesForYear(int year) {
+		List<Message> resultSet = new ArrayList<>();
+		
+		for (Message message : getAllMessages()) {
+			// TODO change Date to GC
+			if (message.getCreated().get(Calendar.YEAR) == year) {
+				resultSet.add(message);
+			}
+		}
+		return resultSet;
 	}
 	
 	public static List<Profile> getAllProfiles() {
