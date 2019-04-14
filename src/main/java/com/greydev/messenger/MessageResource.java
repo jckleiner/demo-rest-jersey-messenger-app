@@ -80,5 +80,4 @@ public class MessageResource {
 		LOG.info("DELETE: deleteMessage(id: {})", messageId);
 		return messageService.deleteMessage(messageId);
 	}
-	
 }
