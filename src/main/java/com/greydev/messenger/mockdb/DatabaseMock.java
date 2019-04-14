@@ -34,8 +34,6 @@ public class DatabaseMock {
 		return messageMap.replace(message.getId(), message);
 	}
 	
-	// **************************************************
-	
 	public static List<Profile> getAllProfiles() {
 		return new ArrayList<Profile>(profileMap.values());
 	}
