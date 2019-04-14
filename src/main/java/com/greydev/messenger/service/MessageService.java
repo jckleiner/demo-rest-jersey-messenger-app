@@ -3,6 +3,8 @@ package com.greydev.messenger.service;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.greydev.messenger.exception.DatabaseOperationException;
 import com.greydev.messenger.mockdb.DatabaseMock;
@@ -10,12 +12,13 @@ import com.greydev.messenger.model.Message;
 
 public class MessageService {
 
+	private static final Logger LOG = LoggerFactory.getLogger(MessageService.class);
 	private static long idCount = 0;
 
 	// saving some dummy messages to the database
 	static {
-		Message message1 = new Message(getNextId(), "Can123", "Such a lovely weather today!");
-		Message message2 = new Message(getNextId(), "Ahmet123", "I own a grocery store!");
+		Message message1 = new Message(getNextId(), "Can", "Such a lovely weather today!");
+		Message message2 = new Message(getNextId(), "Ahmet", "I own a grocery store!");
 
 		DatabaseMock.addMessage(message1.getId(), message1);
 		DatabaseMock.addMessage(message2.getId(), message2);
@@ -32,9 +35,7 @@ public class MessageService {
 		if (message == null) {
 			return new Message(888L, "ERROR", "id is not found");
 		}
-		else {
-			System.out.println(" -> returning: " + message.getAuthor() + ", " + message.getText());
-		}
+		LOG.info(" -> returning: {}, {}", message.getAuthor(), message.getText());
 		return message;
 	}
 	
@@ -49,8 +50,8 @@ public class MessageService {
 		return new Message(111L, "ERROR", "Invalid message, some properties are missing");
 	}
 
-	public Message updateMessage(Long messageId, Message message) throws DatabaseOperationException {
-		message.setId(messageId);
+	public Message updateMessage(Long queryParamMessageId, Message message) throws DatabaseOperationException {
+		message.setId(queryParamMessageId);
 		// ignore the id inside the received message, use the url param id
 		// TODO proper exception
 		if (isMessageValid(message)) {

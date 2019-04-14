@@ -24,42 +24,39 @@ import com.greydev.messenger.service.MessageService;
 @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 public class MessageResource {
 	
+	private static final Logger LOG = LoggerFactory.getLogger(MessageResource.class);
 	private static final MessageService messageService= new MessageService();
 	
 	@GET
 	public List<Message> getAllMessages() {
-		
-		Logger logger = LoggerFactory.getLogger(MessageService.class);
-    logger.info("Hello World");
-
-		System.out.println("GET: getAllMessages");
+		LOG.info("GET: getAllMessages");
 		return messageService.getAllMessages();
 	}
 	
 	@GET
 	@Path("/{messageId}")
 	public Message getMessage(@PathParam("messageId") Long messageId) {
-		System.out.print("GET: getMessage(id: " + messageId + ")");
+		LOG.info("GET: getMessage(id: {})", messageId);
 		return messageService.getMessage(messageId);
 	}
 	
 	@POST
 	public Message addMessage(Message message) throws DatabaseOperationException {
-		System.out.println("POST: addMessage(message: " + message.getAuthor() + ", " + message.getText() + ")");
+		LOG.info("POST: addMessage(message: {}, {})", message.getAuthor(), message.getText());
 		return messageService.addMessage(message);
 	}
 	
 	@PUT
 	@Path("/{messageId}")
 	public Message updateMessage(@PathParam("messageId") Long messageId, Message message) throws DatabaseOperationException {
-		System.out.println("PUT: updateMessage(id: " + messageId + ")");
+		LOG.info("PUT: updateMessage(id: {})", messageId);
 		return messageService.updateMessage(messageId, message);
 	}
 	
 	@DELETE
 	@Path("/{messageId}")
 	public Message deleteMessage(@PathParam("messageId") Long messageId) throws DatabaseOperationException {
-		System.out.println("DELETE: deleteMessage(id: " + messageId + ")");
+		LOG.info("DELETE: deleteMessage(id: {})", messageId);
 		return messageService.deleteMessage(messageId);
 	}
 

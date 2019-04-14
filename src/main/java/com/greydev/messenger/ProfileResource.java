@@ -12,6 +12,9 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.greydev.messenger.exception.DatabaseOperationException;
 import com.greydev.messenger.model.Profile;
 import com.greydev.messenger.service.ProfileService;
@@ -21,41 +24,41 @@ import com.greydev.messenger.service.ProfileService;
 @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 public class ProfileResource {
 
+	private static final Logger LOG = LoggerFactory.getLogger(ProfileResource.class);
 	private static final ProfileService profileService = new ProfileService();
 
 	@GET
 	public List<Profile> getAllProfiles() {
-		System.out.println("GET: getAllProfiles");
+		LOG.info("GET: getAllProfiles");
 		return profileService.getAllProfiles();
 	}
 
 	@GET
 	@Path("/{profileName}")
 	public Profile getProfile(@PathParam("profileName") String profileName) {
-		System.out.print("GET: getProfile(name: " + profileName + ")");
-		profileService.getProfile(profileName);
-		return null;
+		LOG.info("GET: getProfile(name: {})", profileName);
+		return profileService.getProfile(profileName);
 	}
 
 	@POST
 	public Profile addProfile(Profile profile) throws DatabaseOperationException {
-		System.out.println("POST: addProfile(profile: " + profile.getProfileName() + ", " + profile.getFirstName() + ")");
-		return null;
+		LOG.info("POST: addProfile(profile: {}, {})", profile.getProfileName(), profile.getFirstName());
+		return profileService.addProfile(profile);
 	}
 
 	@PUT
 	@Path("/{profileName}")
 	public Profile updateProfile(@PathParam("profileName") String profileName, Profile profile)
 			throws DatabaseOperationException {
-		System.out.println("PUT: updateProfile(Name: " + profileName + ")");
-		return null;
+		LOG.info("PUT: updateProfile(Name: {})", profileName);
+		return profileService.updateProfile(profileName, profile);
 	}
 
 	@DELETE
 	@Path("/{profileName}")
 	public Profile deleteProfile(@PathParam("profileName") String profileName) throws DatabaseOperationException {
-		System.out.println("DELETE: deleteProfile(Name: " + profileName + ")");
-		return null;
+		LOG.info("DELETE: deleteProfile(Name: {})", profileName);
+		return profileService.deleteProfile(profileName);
 	}
 
 }
