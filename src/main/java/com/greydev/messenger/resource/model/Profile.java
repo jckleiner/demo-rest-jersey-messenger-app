@@ -1,4 +1,4 @@
-package com.greydev.messenger.model;
+package com.greydev.messenger.resource.model;
 
 import java.util.Date;
 

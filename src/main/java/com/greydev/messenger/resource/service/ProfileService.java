@@ -1,4 +1,4 @@
-package com.greydev.messenger.service;
+package com.greydev.messenger.resource.service;
 
 import java.util.List;
 
@@ -6,9 +6,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.greydev.messenger.exception.DatabaseOperationException;
-import com.greydev.messenger.mockdb.DatabaseMock;
-import com.greydev.messenger.model.Profile;
+import com.greydev.messenger.resource.exception.DatabaseOperationException;
+import com.greydev.messenger.resource.mockdb.DatabaseMock;
+import com.greydev.messenger.resource.model.Profile;
 
 public class ProfileService {
 	

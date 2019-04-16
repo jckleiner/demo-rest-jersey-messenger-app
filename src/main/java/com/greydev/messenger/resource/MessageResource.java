@@ -1,7 +1,8 @@
-package com.greydev.messenger;
+package com.greydev.messenger.resource;
 
 import java.util.List;
 
+import javax.ws.rs.BeanParam;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
@@ -17,9 +18,10 @@ import javax.ws.rs.core.MediaType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.greydev.messenger.exception.DatabaseOperationException;
-import com.greydev.messenger.model.Message;
-import com.greydev.messenger.service.MessageService;
+import com.greydev.messenger.resource.exception.DatabaseOperationException;
+import com.greydev.messenger.resource.filter.MessageFilterBean;
+import com.greydev.messenger.resource.model.Message;
+import com.greydev.messenger.resource.service.MessageService;
 
 @Path("/messages")
 @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
@@ -29,29 +31,18 @@ public class MessageResource {
 	private static final Logger LOG = LoggerFactory.getLogger(MessageResource.class);
 	private static final MessageService messageService= new MessageService();
 	
-	/*
-	 *  If queryParams are not given or given incorrectly with a different type, 
-	 *  they default to 0, null, false...
-	 *  User defined types can be passed as parameters but the type needs to fulfill
-	 *  some conditions, see jersey docs. Else it returns 404.
-	 *  Default values can be added to @*Param variables with @DefaultValue("defaultValue")
-	 */
 	@GET
-	public List<Message> getAllMessages(
-			@QueryParam("year") int year,
-			@QueryParam("start") int start,
-			@QueryParam("size") int size,
-			@QueryParam("myBoolean") boolean myBoolean,
-			@DefaultValue("defaultValue") @QueryParam("myString") String myString) {
+	public List<Message> getAllMessages(@BeanParam MessageFilterBean filterBean) {
 		
-		LOG.info("myBoolean: {}", myBoolean);
-		LOG.info("myString: {}", myString);
+		int year = filterBean.getYear();
+		int start = filterBean.getStart();
+		int size = filterBean.getSize();
 
+		// TODO optimize filtering
 		if (year != 0) {
 			return messageService.getAllMessagesForYear(year);
 		}
-		// TODO optimize filtering
-		else if (start > 0 && size > 0) {
+		else if (start >= 0 && size > 0) {
 			return messageService.getAllMessagesPaginated(start, size);
 		}
 		

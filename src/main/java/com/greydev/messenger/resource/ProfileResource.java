@@ -1,4 +1,4 @@
-package com.greydev.messenger;
+package com.greydev.messenger.resource;
 
 import java.util.List;
 
@@ -15,9 +15,9 @@ import javax.ws.rs.core.MediaType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.greydev.messenger.exception.DatabaseOperationException;
-import com.greydev.messenger.model.Profile;
-import com.greydev.messenger.service.ProfileService;
+import com.greydev.messenger.resource.exception.DatabaseOperationException;
+import com.greydev.messenger.resource.model.Profile;
+import com.greydev.messenger.resource.service.ProfileService;
 
 @Path("/profiles")
 @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })

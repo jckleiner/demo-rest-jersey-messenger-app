@@ -1,4 +1,4 @@
-package com.greydev.messenger.service;
+package com.greydev.messenger.resource.service;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -8,9 +8,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.greydev.messenger.exception.DatabaseOperationException;
-import com.greydev.messenger.mockdb.DatabaseMock;
-import com.greydev.messenger.model.Message;
+import com.greydev.messenger.resource.exception.DatabaseOperationException;
+import com.greydev.messenger.resource.mockdb.DatabaseMock;
+import com.greydev.messenger.resource.model.Message;
 
 public class MessageService {
 

@@ -1,4 +1,4 @@
-package com.greydev.messenger.exception;
+package com.greydev.messenger.resource.exception;
 
 public class DatabaseOperationException extends Exception {
 	
