@@ -89,9 +89,12 @@ public class MessageService {
 	}
 	
 	public List<Message> getAllMessagesPaginated(int start, int size) {
+		List<Message> messageList = DatabaseMock.getAllMessages();
 		
-		
-		return null;
+		if ((start + size) >= messageList.size()) {
+			return messageList.subList(start, messageList.size());
+		}
+		return messageList.subList(start, start + size);
 	}
 
 	// mandatory properties: Author, Text

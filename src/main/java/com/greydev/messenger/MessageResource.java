@@ -34,20 +34,25 @@ public class MessageResource {
 	 *  they default to 0, null, false...
 	 *  User defined types can be passed as parameters but the type needs to fulfill
 	 *  some conditions, see jersey docs. Else it returns 404.
-	 *  Default values can be added to @*Param variables
+	 *  Default values can be added to @*Param variables with @DefaultValue("defaultValue")
 	 */
 	@GET
 	public List<Message> getAllMessages(
 			@QueryParam("year") int year,
+			@QueryParam("start") int start,
+			@QueryParam("size") int size,
 			@QueryParam("myBoolean") boolean myBoolean,
 			@DefaultValue("defaultValue") @QueryParam("myString") String myString) {
 		
 		LOG.info("myBoolean: {}", myBoolean);
 		LOG.info("myString: {}", myString);
-		
+
 		if (year != 0) {
-			LOG.info("YEAR PARAM IS GIVEN AS: {}", year);
 			return messageService.getAllMessagesForYear(year);
+		}
+		// TODO optimize filtering
+		else if (start > 0 && size > 0) {
+			return messageService.getAllMessagesPaginated(start, size);
 		}
 		
 		LOG.info("GET: getAllMessages");
