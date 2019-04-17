@@ -4,12 +4,17 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
 
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Response;
+
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.greydev.messenger.resource.database.DatabaseMock;
+import com.greydev.messenger.resource.exception.DataNotFoundException;
 import com.greydev.messenger.resource.exception.DatabaseOperationException;
+import com.greydev.messenger.resource.model.ErrorMessage;
 import com.greydev.messenger.resource.model.Message;
 
 public class MessageService {
@@ -36,7 +41,9 @@ public class MessageService {
 		
 		//TODO if no message is found, return a proper exception message
 		if (message == null) {
-			return new Message(888L, "ERROR", "id is not found");
+			ErrorMessage errorMessage = new ErrorMessage(655, "such error", "much message");
+			Response response = Response.status(errorMessage.getErrorCode()).entity(errorMessage).build();
+			throw new WebApplicationException(response);
 		}
 		LOG.info(" -> returning: {}, {}", message.getAuthor(), message.getText());
 		return message;

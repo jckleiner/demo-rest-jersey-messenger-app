@@ -2,6 +2,9 @@ package com.greydev.messenger.resource.model;
 
 import java.util.GregorianCalendar;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
+@XmlRootElement
 public class Comment {
 	
 	private GregorianCalendar created;

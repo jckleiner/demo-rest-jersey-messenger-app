@@ -1,5 +1,7 @@
 package com.greydev.messenger.resource;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
 
 import javax.ws.rs.BeanParam;
@@ -11,7 +13,11 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+import javax.ws.rs.core.UriInfo;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,9 +62,12 @@ public class MessageResource {
 	}
 	
 	@POST
-	public Message addMessage(Message message) throws DatabaseOperationException {
+	public Response addMessage(@Context UriInfo uriInfo, Message message) throws DatabaseOperationException, URISyntaxException {
 		LOG.info("POST: addMessage(message: {}, {})", message.getAuthor(), message.getText());
-		return messageService.addMessage(message);
+		Message addedMessage = messageService.addMessage(message);
+		String id = Long.toString(addedMessage.getId());
+		URI locationUri = uriInfo.getAbsolutePathBuilder().path(id).build();
+		return Response.created(locationUri).entity(addedMessage).build();
 	}
 	
 	@PUT
