@@ -15,8 +15,12 @@ public class DatabaseMock {
 	private static final Map<String, Profile> profileMap = new HashMap<>();
 	
 	
-	public static List<Message> getAllMessages() {
+	public static List<Message> getAllMessagesAsList() {
 		return new ArrayList<Message>(messageMap.values());
+	}
+	
+	public static Map<Long, Message> getAllMessagesAsMap() {
+		return messageMap;
 	}
 	
 	public static Message getMessage(Long id) {
@@ -38,7 +42,7 @@ public class DatabaseMock {
 	public static List<Message> getAllMessagesForYear(int year) {
 		List<Message> resultSet = new ArrayList<>();
 		
-		for (Message message : getAllMessages()) {
+		for (Message message : getAllMessagesAsList()) {
 			// TODO change Date to GC
 			if (message.getCreated().get(Calendar.YEAR) == year) {
 				resultSet.add(message);

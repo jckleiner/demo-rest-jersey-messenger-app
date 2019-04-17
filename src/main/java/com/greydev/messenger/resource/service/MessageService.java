@@ -28,7 +28,7 @@ public class MessageService {
 	}
 
 	public List<Message> getAllMessages() {
-		return DatabaseMock.getAllMessages();
+		return DatabaseMock.getAllMessagesAsList();
 	}
 	
 	public Message getMessage(Long id) {
@@ -89,7 +89,7 @@ public class MessageService {
 	}
 	
 	public List<Message> getAllMessagesPaginated(int start, int size) {
-		List<Message> messageList = DatabaseMock.getAllMessages();
+		List<Message> messageList = DatabaseMock.getAllMessagesAsList();
 		
 		if ((start + size) >= messageList.size()) {
 			return messageList.subList(start, messageList.size());

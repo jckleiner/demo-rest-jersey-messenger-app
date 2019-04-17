@@ -5,14 +5,12 @@ import java.util.List;
 import javax.ws.rs.BeanParam;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
-import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 import org.slf4j.Logger;
@@ -75,5 +73,12 @@ public class MessageResource {
 	public Message deleteMessage(@PathParam("messageId") Long messageId) throws DatabaseOperationException {
 		LOG.info("DELETE: deleteMessage(id: {})", messageId);
 		return messageService.deleteMessage(messageId);
+	}
+	
+	// not giving a method parameter means: for all methods.
+	@Path("{messageId}/comments")
+	public CommentResource getCommentResource() {
+		LOG.info("getAllComments");
+		return new CommentResource();
 	}
 }

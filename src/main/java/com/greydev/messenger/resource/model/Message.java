@@ -1,18 +1,20 @@
 package com.greydev.messenger.resource.model;
 
 import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.Map;
 
-import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 @XmlRootElement
 public class Message {
 
-	@XmlElement
 	private GregorianCalendar created;
 	private Long id;
 	private String text;
 	private String author;
+	private Map<Long, Comment> comments = new HashMap<>();
 	
 	public Message() {
 	}
@@ -22,6 +24,10 @@ public class Message {
 		this.id = id;
 		this.text = text;
 		this.created = new GregorianCalendar();
+		
+		this.comments.put(1L, new Comment(1L, "Commenter Can", "First Comment"));
+		this.comments.put(2L, new Comment(2L, "Commenter Ahmet", "Grocery store"));
+		this.comments.put(3L, new Comment(3L, "Commenter Jack", "Hey there"));
 	}
 	
 	public Message(Long id, String author, String text, GregorianCalendar date) {
@@ -29,6 +35,15 @@ public class Message {
 		this.id = id;
 		this.text = text;
 		this.created = date;
+	}
+	
+	public Message(Long id, String author, String text, 
+			GregorianCalendar date, Map<Long, Comment> comments) {
+		this.author = author;
+		this.id = id;
+		this.text = text;
+		this.created = date;
+		this.comments = comments;
 	}
 
 	public void setAuthor(String author) {
@@ -61,6 +76,15 @@ public class Message {
 	
 	public void setCreated(GregorianCalendar date) {
 		created = date;
+	}
+
+	@XmlTransient
+	public Map<Long, Comment> getComments() {
+		return comments;
+	}
+
+	public void setComments(Map<Long, Comment> comments) {
+		this.comments = comments;
 	}
 	
 }
