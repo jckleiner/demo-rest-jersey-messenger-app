@@ -1,4 +1,4 @@
-package com.greydev.messenger.resource.mockdb;
+package com.greydev.messenger.resource.database;
 
 import java.util.ArrayList;
 import java.util.Calendar;

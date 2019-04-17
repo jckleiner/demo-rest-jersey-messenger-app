@@ -6,8 +6,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.greydev.messenger.resource.database.DatabaseMock;
 import com.greydev.messenger.resource.exception.DatabaseOperationException;
-import com.greydev.messenger.resource.mockdb.DatabaseMock;
 import com.greydev.messenger.resource.model.Profile;
 
 public class ProfileService {

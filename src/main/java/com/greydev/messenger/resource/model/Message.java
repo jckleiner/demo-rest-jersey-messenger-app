@@ -25,9 +25,9 @@ public class Message {
 		this.text = text;
 		this.created = new GregorianCalendar();
 		
-		this.comments.put(1L, new Comment(1L, "Commenter Can", "First Comment"));
-		this.comments.put(2L, new Comment(2L, "Commenter Ahmet", "Grocery store"));
-		this.comments.put(3L, new Comment(3L, "Commenter Jack", "Hey there"));
+		this.comments.put(1L, new Comment(1L, author, "First Comment"));
+		this.comments.put(2L, new Comment(2L, author, "Grocery store"));
+		this.comments.put(3L, new Comment(3L, author, "Hey there"));
 	}
 	
 	public Message(Long id, String author, String text, GregorianCalendar date) {
@@ -35,6 +35,10 @@ public class Message {
 		this.id = id;
 		this.text = text;
 		this.created = date;
+		
+		this.comments.put(1L, new Comment(1L, author, "First Comment"));
+		this.comments.put(2L, new Comment(2L, author, "Grocery store"));
+		this.comments.put(3L, new Comment(3L, author, "Hey there"));
 	}
 	
 	public Message(Long id, String author, String text, 
@@ -78,7 +82,7 @@ public class Message {
 		created = date;
 	}
 
-	@XmlTransient
+//	@XmlTransient
 	public Map<Long, Comment> getComments() {
 		return comments;
 	}
