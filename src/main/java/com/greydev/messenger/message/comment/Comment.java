@@ -1,4 +1,4 @@
-package com.greydev.messenger.resource.model;
+package com.greydev.messenger.message.comment;
 
 import java.util.GregorianCalendar;
 

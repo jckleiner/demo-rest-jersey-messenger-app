@@ -1,4 +1,4 @@
-package com.greydev.messenger.resource.database;
+package com.greydev.messenger.database;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -6,8 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.greydev.messenger.resource.model.Message;
-import com.greydev.messenger.resource.model.Profile;
+import com.greydev.messenger.message.Message;
+import com.greydev.messenger.profile.Profile;
 
 public class DatabaseMock {
 	

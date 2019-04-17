@@ -1,9 +1,6 @@
-package com.greydev.messenger.resource;
+package com.greydev.messenger.exception;
 
 import javax.ws.rs.core.Response;
-
-import com.greydev.messenger.resource.exception.DataNotFoundException;
-import com.greydev.messenger.resource.model.ErrorMessage;
 
 /* example exception mapper. Needs @Provider annotation to be activated.
 	if (message == null) {
@@ -11,7 +8,7 @@ import com.greydev.messenger.resource.model.ErrorMessage;
 	}
 	sends a response message with a custom error message.
 */
-public class ExceptionMapper implements javax.ws.rs.ext.ExceptionMapper<DataNotFoundException> {
+public class DataNotFoundExceptionMapper implements javax.ws.rs.ext.ExceptionMapper<DataNotFoundException> {
 
 	@Override
 	public Response toResponse(DataNotFoundException exception) {

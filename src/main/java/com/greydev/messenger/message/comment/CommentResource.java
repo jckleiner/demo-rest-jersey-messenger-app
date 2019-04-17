@@ -1,4 +1,4 @@
-package com.greydev.messenger.resource;
+package com.greydev.messenger.message.comment;
 
 import java.util.List;
 
@@ -11,9 +11,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-
-import com.greydev.messenger.resource.model.Comment;
-import com.greydev.messenger.resource.service.CommentService;
 
 @Path("/")
 @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })

@@ -1,4 +1,4 @@
-package com.greydev.messenger.resource.model;
+package com.greydev.messenger.message;
 
 import java.util.GregorianCalendar;
 import java.util.HashMap;
@@ -6,6 +6,8 @@ import java.util.Map;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
+
+import com.greydev.messenger.message.comment.Comment;
 
 @XmlRootElement
 public class Message {
@@ -90,5 +92,5 @@ public class Message {
 	public void setComments(Map<Long, Comment> comments) {
 		this.comments = comments;
 	}
-	
+
 }

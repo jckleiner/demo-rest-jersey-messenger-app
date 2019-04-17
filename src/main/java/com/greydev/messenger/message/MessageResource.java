@@ -1,4 +1,4 @@
-package com.greydev.messenger.resource;
+package com.greydev.messenger.message;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -22,22 +22,21 @@ import javax.ws.rs.core.UriInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.greydev.messenger.resource.exception.DatabaseOperationException;
-import com.greydev.messenger.resource.filter.MessageFilterBean;
-import com.greydev.messenger.resource.model.Message;
-import com.greydev.messenger.resource.service.MessageService;
+import com.greydev.messenger.exception.DatabaseOperationException;
+import com.greydev.messenger.filter.MessageFilterBean;
+import com.greydev.messenger.message.comment.CommentResource;
 
 @Path("/messages")
 @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 public class MessageResource {
-	
+
 	private static final Logger LOG = LoggerFactory.getLogger(MessageResource.class);
-	private static final MessageService messageService= new MessageService();
-	
+	private static final MessageService messageService = new MessageService();
+
 	@GET
 	public List<Message> getAllMessages(@BeanParam MessageFilterBean filterBean) {
-		
+
 		int year = filterBean.getYear();
 		int start = filterBean.getStart();
 		int size = filterBean.getSize();
@@ -45,45 +44,46 @@ public class MessageResource {
 		// TODO optimize filtering
 		if (year != 0) {
 			return messageService.getAllMessagesForYear(year);
-		}
-		else if (start >= 0 && size > 0) {
+		} else if (start >= 0 && size > 0) {
 			return messageService.getAllMessagesPaginated(start, size);
 		}
-		
+
 		LOG.info("GET: getAllMessages");
 		return messageService.getAllMessages();
 	}
-	
+
 	@GET
 	@Path("/{messageId}")
 	public Message getMessage(@PathParam("messageId") Long messageId) {
 		LOG.info("GET: getMessage(id: {})", messageId);
 		return messageService.getMessage(messageId);
 	}
-	
+
 	@POST
-	public Response addMessage(@Context UriInfo uriInfo, Message message) throws DatabaseOperationException, URISyntaxException {
+	public Response addMessage(@Context UriInfo uriInfo, Message message)
+			throws DatabaseOperationException, URISyntaxException {
 		LOG.info("POST: addMessage(message: {}, {})", message.getAuthor(), message.getText());
 		Message addedMessage = messageService.addMessage(message);
 		String id = Long.toString(addedMessage.getId());
 		URI locationUri = uriInfo.getAbsolutePathBuilder().path(id).build();
 		return Response.created(locationUri).entity(addedMessage).build();
 	}
-	
+
 	@PUT
 	@Path("/{messageId}")
-	public Message updateMessage(@PathParam("messageId") Long messageId, Message message) throws DatabaseOperationException {
+	public Message updateMessage(@PathParam("messageId") Long messageId, Message message)
+			throws DatabaseOperationException {
 		LOG.info("PUT: updateMessage(id: {})", messageId);
 		return messageService.updateMessage(messageId, message);
 	}
-	
+
 	@DELETE
 	@Path("/{messageId}")
 	public Message deleteMessage(@PathParam("messageId") Long messageId) throws DatabaseOperationException {
 		LOG.info("DELETE: deleteMessage(id: {})", messageId);
 		return messageService.deleteMessage(messageId);
 	}
-	
+
 	// not giving a method parameter means: for all methods.
 	@Path("{messageId}/comments")
 	public CommentResource getCommentResource() {

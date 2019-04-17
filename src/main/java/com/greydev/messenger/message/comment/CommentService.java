@@ -1,13 +1,12 @@
-package com.greydev.messenger.resource.service;
+package com.greydev.messenger.message.comment;
 
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Map;
 
-import com.greydev.messenger.resource.database.DatabaseMock;
-import com.greydev.messenger.resource.model.Comment;
-import com.greydev.messenger.resource.model.Message;
+import com.greydev.messenger.database.DatabaseMock;
+import com.greydev.messenger.message.Message;
 
 //TODO add error handling
 public class CommentService {
