@@ -7,14 +7,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.greydev.messenger.database.DatabaseMock;
-import com.greydev.messenger.exception.DatabaseOperationException;
 
 public class ProfileService {
 	
 	//saving some dummy profiles to the database
 	static {
-		Profile profile1 = new Profile("jk", "Can", "Sagol");
-		Profile profile2 = new Profile("ahmo", "Ahmet", "Eyw");
+		Profile profile1 = new Profile("jk", "Can", "thx");
+		Profile profile2 = new Profile("johny", "jo", "Eyw");
 
 		DatabaseMock.addProfile(profile1.getProfileName(), profile1);
 		DatabaseMock.addProfile(profile2.getProfileName(), profile2);
@@ -52,7 +51,7 @@ public class ProfileService {
 		return newProfile;
 	}
 
-	public Profile updateProfile(String queryParamProfileName, Profile profile) throws DatabaseOperationException {
+	public Profile updateProfile(String queryParamProfileName, Profile profile) {
 		// replace the queryParameterName with the profile name if it exist
 		profile.setProfileName(queryParamProfileName);
 		
@@ -69,7 +68,7 @@ public class ProfileService {
 		return newProfile;
 	}
 
-	public Profile deleteProfile(String profileName) throws DatabaseOperationException {
+	public Profile deleteProfile(String profileName) {
 		Profile response = DatabaseMock.deleteProfile(profileName);
 		// Send back a message 'message with requested id is not found'
 		if (response == null) {

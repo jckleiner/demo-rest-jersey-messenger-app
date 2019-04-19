@@ -1,5 +1,7 @@
 package com.greydev.messenger.message;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -13,7 +15,6 @@ import org.slf4j.LoggerFactory;
 
 import com.greydev.messenger.database.DatabaseMock;
 import com.greydev.messenger.exception.DataNotFoundException;
-import com.greydev.messenger.exception.DatabaseOperationException;
 import com.greydev.messenger.exception.ErrorMessage;
 
 public class MessageService {
@@ -25,7 +26,7 @@ public class MessageService {
 	static {
 		Message message1 = new Message(getNextId(), "Can", "Such a lovely weather today!",
 				new GregorianCalendar(2015, 11, 11));
-		Message message2 = new Message(getNextId(), "Ahmet", "I own a grocery store!");
+		Message message2 = new Message(getNextId(), "Jason", "I own a grocery store!");
 
 		DatabaseMock.addMessage(message1.getId(), message1);
 		DatabaseMock.addMessage(message2.getId(), message2);
@@ -35,14 +36,11 @@ public class MessageService {
 		return DatabaseMock.getAllMessagesAsList();
 	}
 
-	public Message getMessage(Long id) {
+	public Message getMessage(Long id) throws DataNotFoundException, UnknownHostException {
 		Message message = DatabaseMock.getMessage(id);
 
-		// TODO if no message is found, return a proper exception message
 		if (message == null) {
-			ErrorMessage errorMessage = new ErrorMessage(655, "such error", "much message");
-			Response response = Response.status(errorMessage.getErrorCode()).entity(errorMessage).build();
-			throw new WebApplicationException(response);
+			throw new DataNotFoundException("GET", InetAddress.getLocalHost().getHostName() + "--/messenger/webapi/messages/" + id);
 		}
 		LOG.info(" -> returning: {}, {}", message.getAuthor(), message.getText());
 		return message;
@@ -50,6 +48,7 @@ public class MessageService {
 
 	public Message addMessage(Message message) {
 		Message newMessage = new Message(getNextId(), message.getAuthor(), message.getText());
+
 
 		if (isMessageValid(newMessage)) {
 			DatabaseMock.addMessage(newMessage.getId(), newMessage);
@@ -59,7 +58,7 @@ public class MessageService {
 		return new Message(111L, "ERROR", "Invalid message, some properties are missing");
 	}
 
-	public Message updateMessage(Long queryParamMessageId, Message message) throws DatabaseOperationException {
+	public Message updateMessage(Long queryParamMessageId, Message message) {
 		message.setId(queryParamMessageId);
 		// ignore the id inside the received message, use the url param id
 		// TODO proper exception
@@ -74,11 +73,11 @@ public class MessageService {
 		return new Message(111L, "ERROR", "Invalid message, some properties are missing");
 	}
 
-	public Message deleteMessage(Long id) throws DatabaseOperationException {
+	public Message deleteMessage(Long id) throws DataNotFoundException {
 		Message response = DatabaseMock.deleteMessage(id);
 		// Send back a message 'message with requested id is not found'
 		if (response == null) {
-			throw new DatabaseOperationException();
+			throw new DataNotFoundException();
 		}
 		return response;
 	}

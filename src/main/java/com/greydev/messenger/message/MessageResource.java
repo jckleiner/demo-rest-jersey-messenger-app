@@ -2,6 +2,7 @@ package com.greydev.messenger.message;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.UnknownHostException;
 import java.util.List;
 
 import javax.ws.rs.BeanParam;
@@ -22,7 +23,7 @@ import javax.ws.rs.core.UriInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.greydev.messenger.exception.DatabaseOperationException;
+import com.greydev.messenger.exception.DataNotFoundException;
 import com.greydev.messenger.filter.MessageFilterBean;
 import com.greydev.messenger.message.comment.CommentResource;
 
@@ -36,10 +37,10 @@ public class MessageResource {
 
 	@GET
 	public List<Message> getAllMessages(@BeanParam MessageFilterBean filterBean) {
-
 		int year = filterBean.getYear();
 		int start = filterBean.getStart();
 		int size = filterBean.getSize();
+		LOG.info("GET: getAllMessages");
 
 		// TODO optimize filtering
 		if (year != 0) {
@@ -47,23 +48,22 @@ public class MessageResource {
 		} else if (start >= 0 && size > 0) {
 			return messageService.getAllMessagesPaginated(start, size);
 		}
-
-		LOG.info("GET: getAllMessages");
 		return messageService.getAllMessages();
 	}
 
 	@GET
 	@Path("/{messageId}")
-	public Message getMessage(@PathParam("messageId") Long messageId) {
+	public Message getMessage(@PathParam("messageId") Long messageId) throws DataNotFoundException, UnknownHostException {
 		LOG.info("GET: getMessage(id: {})", messageId);
 		return messageService.getMessage(messageId);
 	}
 
 	@POST
 	public Response addMessage(@Context UriInfo uriInfo, Message message)
-			throws DatabaseOperationException, URISyntaxException {
+			throws URISyntaxException {
 		LOG.info("POST: addMessage(message: {}, {})", message.getAuthor(), message.getText());
 		Message addedMessage = messageService.addMessage(message);
+		
 		String id = Long.toString(addedMessage.getId());
 		URI locationUri = uriInfo.getAbsolutePathBuilder().path(id).build();
 		return Response.created(locationUri).entity(addedMessage).build();
@@ -71,15 +71,14 @@ public class MessageResource {
 
 	@PUT
 	@Path("/{messageId}")
-	public Message updateMessage(@PathParam("messageId") Long messageId, Message message)
-			throws DatabaseOperationException {
+	public Message updateMessage(@PathParam("messageId") Long messageId, Message message) {
 		LOG.info("PUT: updateMessage(id: {})", messageId);
 		return messageService.updateMessage(messageId, message);
 	}
 
 	@DELETE
 	@Path("/{messageId}")
-	public Message deleteMessage(@PathParam("messageId") Long messageId) throws DatabaseOperationException {
+	public Message deleteMessage(@PathParam("messageId") Long messageId) throws DataNotFoundException {
 		LOG.info("DELETE: deleteMessage(id: {})", messageId);
 		return messageService.deleteMessage(messageId);
 	}

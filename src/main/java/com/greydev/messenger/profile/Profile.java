@@ -2,7 +2,6 @@ package com.greydev.messenger.profile;
 
 import java.util.Date;
 
-import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
@@ -11,7 +10,6 @@ public class Profile {
 	private String profileName;
 	private String firstName;
 	private String lastName;
-	@XmlElement
 	private Date created;
 
 	public Profile() {
