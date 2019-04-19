@@ -27,6 +27,7 @@ public class Message {
 		this.text = text;
 		this.created = new GregorianCalendar();
 
+		// add dummy comments for each message
 		this.comments.put(1L, new Comment(1L, author, "First Comment"));
 		this.comments.put(2L, new Comment(2L, author, "Grocery store"));
 		this.comments.put(3L, new Comment(3L, author, "Hey there"));
@@ -38,6 +39,7 @@ public class Message {
 		this.text = text;
 		this.created = date;
 
+		// add dummy comments for each message
 		this.comments.put(1L, new Comment(1L, author, "First Comment"));
 		this.comments.put(2L, new Comment(2L, author, "Grocery store"));
 		this.comments.put(3L, new Comment(3L, author, "Hey there"));

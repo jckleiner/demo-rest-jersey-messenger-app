@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 
 import com.greydev.messenger.database.DatabaseMock;
 import com.greydev.messenger.exception.DataNotFoundException;
+import com.greydev.messenger.exception.InvalidRequestDataException;
 
 public class MessageService {
 
@@ -26,42 +27,42 @@ public class MessageService {
 		if (message == null) {
 			throw new DataNotFoundException("GET", "/messages/" + id);
 		}
-		LOG.info(" -> returning: {}, {}", message.getAuthor(), message.getText());
 		return message;
 	}
 
-	public Message addMessage(Message message) {
+	public Message addMessage(Message message) throws InvalidRequestDataException {
 		Message newMessage = new Message(getNextId(), message.getAuthor(), message.getText());
 
-		if (isMessageValid(newMessage)) {
-			DatabaseMock.addMessage(newMessage.getId(), newMessage);
-			return newMessage;
+		if (!isMessageValid(newMessage)) {
+			throw new InvalidRequestDataException("POST", "/messages");
 		}
-		// TODO if the message is not valid, return a proper exception message
-		return new Message(111L, "ERROR", "Invalid message, some properties are missing");
+		DatabaseMock.addMessage(newMessage.getId(), newMessage);
+		return newMessage;
 	}
 
-	public Message updateMessage(Long queryParamMessageId, Message message) {
-		message.setId(queryParamMessageId);
+	public Message updateMessage(Long queryParamMessageId, Message message) throws InvalidRequestDataException {
 		// ignore the id inside the received message, use the url param id
-		// TODO proper exception
-		if (isMessageValid(message)) {
-			if (doesMessageExist(message.getId())) {
-				return DatabaseMock.updateMessage(message);
-			}
-			else {
-				DatabaseMock.addMessage(message.getId(), message);
-				return message;
-			}
+		message.setId(queryParamMessageId);
+
+		if (!isMessageValid(message)) {
+			throw new InvalidRequestDataException("PUT", "/messages");
 		}
-		return new Message(111L, "ERROR", "Invalid message, some properties are missing");
+
+		if (doesMessageExist(message.getId())) {
+			DatabaseMock.updateMessage(message);
+			return message;
+		}
+		else {
+			DatabaseMock.addMessage(message.getId(), message);
+			return message;
+		}
 	}
 
 	public Message deleteMessage(Long id) throws DataNotFoundException {
 		Message response = DatabaseMock.deleteMessage(id);
-		// Send back a message 'message with requested id is not found'
+
 		if (response == null) {
-			throw new DataNotFoundException();
+			throw new DataNotFoundException("DELETE", "/messages/" + id);
 		}
 		return response;
 	}

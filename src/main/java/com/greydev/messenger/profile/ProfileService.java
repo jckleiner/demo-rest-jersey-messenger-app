@@ -7,6 +7,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.greydev.messenger.database.DatabaseMock;
+import com.greydev.messenger.exception.DataNotFoundException;
+import com.greydev.messenger.exception.InvalidRequestDataException;
 
 public class ProfileService {
 
@@ -16,57 +18,46 @@ public class ProfileService {
 		return DatabaseMock.getAllProfiles();
 	}
 
-	public Profile getProfile(String profileName) {
+	public Profile getProfile(String profileName) throws DataNotFoundException {
 		Profile newProfile = DatabaseMock.getProfile(profileName);
 		if (newProfile == null) {
-			LOG.info("No profile with name '{}' found.", profileName);
-			// TODO proper error message response
-			return new Profile("ERROR", "profile with '" + profileName + "' does not exist", "");
+			throw new DataNotFoundException("GET", "/profiles/" + profileName);
 		}
 		return DatabaseMock.getProfile(profileName);
 	}
 
 	// profileName is required
-	public Profile addProfile(Profile profile) {
+	public Profile addProfile(Profile profile) throws InvalidRequestDataException {
 
-		if (!isProfileValid(profile)) {
-			LOG.info("Not a valid profile, missing properties");
-			return new Profile("ERROR", "profile is missing required properties", "");
-		}
-		else if (doesProfileNameExist(profile.getProfileName())) {
-			LOG.info("Profile name {} already exist", profile.getProfileName());
-			return new Profile("ERROR", "Profile name already exist", "");
+		if (!isProfileValid(profile) || doesProfileNameExist(profile.getProfileName())) {
+			throw new InvalidRequestDataException("POST", "/profiles");
 		}
 		Profile newProfile = new Profile(profile.getProfileName(), profile.getFirstName(), profile.getLastName());
 		DatabaseMock.addProfile(newProfile.getProfileName(), newProfile);
 		return newProfile;
 	}
 
-	public Profile updateProfile(String queryParamProfileName, Profile profile) {
+	public Profile updateProfile(String queryParamProfileName, Profile profile)
+			throws InvalidRequestDataException, DataNotFoundException {
 		// replace the queryParameterName with the profile name if it exist
 		profile.setProfileName(queryParamProfileName);
 
 		if (!isProfileValid(profile)) {
-			LOG.info("Not a valid profile, missing properties");
-			return new Profile("ERROR", "profile is missing required properties", "");
+			throw new InvalidRequestDataException("PUT", "/profiles");
 		}
 		else if (!doesProfileNameExist(profile.getProfileName())) {
-			LOG.info("Profile with name {} does not exist", profile.getProfileName());
-			return new Profile("ERROR", "Profile name does not exist", "");
+			throw new DataNotFoundException("PUT", "/profiles/" + profile.getProfileName());
 		}
 		Profile newProfile = new Profile(profile.getProfileName(), profile.getFirstName(), profile.getLastName());
 		DatabaseMock.updateProfile(newProfile);
 		return newProfile;
 	}
 
-	public Profile deleteProfile(String profileName) {
+	public Profile deleteProfile(String profileName) throws DataNotFoundException {
 		Profile response = DatabaseMock.deleteProfile(profileName);
-		// Send back a message 'message with requested id is not found'
 		if (response == null) {
-			LOG.info("Profile with name {} does not exist", profileName);
-			return new Profile("ERROR", "Profile name does not exist", "");
+			throw new DataNotFoundException("DELETE", "/profiles/" + profileName);
 		}
-		// return the deleted profile
 		LOG.info("Succesfully deleted profile '{}'", profileName);
 		return response;
 	}

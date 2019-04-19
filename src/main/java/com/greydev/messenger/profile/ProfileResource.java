@@ -15,6 +15,9 @@ import javax.ws.rs.core.MediaType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.greydev.messenger.exception.DataNotFoundException;
+import com.greydev.messenger.exception.InvalidRequestDataException;
+
 @Path("/profiles")
 @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
@@ -31,27 +34,28 @@ public class ProfileResource {
 
 	@GET
 	@Path("/{profileName}")
-	public Profile getProfile(@PathParam("profileName") String profileName) {
+	public Profile getProfile(@PathParam("profileName") String profileName) throws DataNotFoundException {
 		LOG.info("GET: getProfile(name: {})", profileName);
 		return profileService.getProfile(profileName);
 	}
 
 	@POST
-	public Profile addProfile(Profile profile) {
+	public Profile addProfile(Profile profile) throws InvalidRequestDataException {
 		LOG.info("POST: addProfile(profile: {}, {})", profile.getProfileName(), profile.getFirstName());
 		return profileService.addProfile(profile);
 	}
 
 	@PUT
 	@Path("/{profileName}")
-	public Profile updateProfile(@PathParam("profileName") String profileName, Profile profile) {
+	public Profile updateProfile(@PathParam("profileName") String profileName, Profile profile)
+			throws InvalidRequestDataException, DataNotFoundException {
 		LOG.info("PUT: updateProfile(Name: {})", profileName);
 		return profileService.updateProfile(profileName, profile);
 	}
 
 	@DELETE
 	@Path("/{profileName}")
-	public Profile deleteProfile(@PathParam("profileName") String profileName) {
+	public Profile deleteProfile(@PathParam("profileName") String profileName) throws DataNotFoundException {
 		LOG.info("DELETE: deleteProfile(Name: {})", profileName);
 		return profileService.deleteProfile(profileName);
 	}

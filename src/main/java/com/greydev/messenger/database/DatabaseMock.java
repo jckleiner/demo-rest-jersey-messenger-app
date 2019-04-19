@@ -56,7 +56,6 @@ public class DatabaseMock {
 		List<Message> resultSet = new ArrayList<>();
 
 		for (Message message : getAllMessagesAsList()) {
-			// TODO change Date to GC
 			if (message.getCreated().get(Calendar.YEAR) == year) {
 				resultSet.add(message);
 			}

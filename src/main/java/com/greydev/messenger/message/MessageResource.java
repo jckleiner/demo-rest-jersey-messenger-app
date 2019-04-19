@@ -23,6 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.greydev.messenger.exception.DataNotFoundException;
+import com.greydev.messenger.exception.InvalidRequestDataException;
 import com.greydev.messenger.filter.MessageFilterBean;
 import com.greydev.messenger.message.comment.CommentResource;
 
@@ -60,7 +61,8 @@ public class MessageResource {
 	}
 
 	@POST
-	public Response addMessage(@Context UriInfo uriInfo, Message message) throws URISyntaxException {
+	public Response addMessage(@Context UriInfo uriInfo, Message message)
+			throws URISyntaxException, InvalidRequestDataException {
 		LOG.info("POST: addMessage(message: {}, {})", message.getAuthor(), message.getText());
 		Message addedMessage = messageService.addMessage(message);
 
@@ -71,7 +73,8 @@ public class MessageResource {
 
 	@PUT
 	@Path("/{messageId}")
-	public Message updateMessage(@PathParam("messageId") Long messageId, Message message) {
+	public Message updateMessage(@PathParam("messageId") Long messageId, Message message)
+			throws InvalidRequestDataException {
 		LOG.info("PUT: updateMessage(id: {})", messageId);
 		return messageService.updateMessage(messageId, message);
 	}
