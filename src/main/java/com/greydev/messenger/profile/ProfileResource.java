@@ -1,4 +1,4 @@
-package com.greydev.messenger;
+package com.greydev.messenger.profile;
 
 import java.util.List;
 
@@ -15,9 +15,8 @@ import javax.ws.rs.core.MediaType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.greydev.messenger.exception.DatabaseOperationException;
-import com.greydev.messenger.model.Profile;
-import com.greydev.messenger.service.ProfileService;
+import com.greydev.messenger.exception.DataNotFoundException;
+import com.greydev.messenger.exception.InvalidRequestDataException;
 
 @Path("/profiles")
 @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
@@ -35,13 +34,13 @@ public class ProfileResource {
 
 	@GET
 	@Path("/{profileName}")
-	public Profile getProfile(@PathParam("profileName") String profileName) {
+	public Profile getProfile(@PathParam("profileName") String profileName) throws DataNotFoundException {
 		LOG.info("GET: getProfile(name: {})", profileName);
 		return profileService.getProfile(profileName);
 	}
 
 	@POST
-	public Profile addProfile(Profile profile) throws DatabaseOperationException {
+	public Profile addProfile(Profile profile) throws InvalidRequestDataException {
 		LOG.info("POST: addProfile(profile: {}, {})", profile.getProfileName(), profile.getFirstName());
 		return profileService.addProfile(profile);
 	}
@@ -49,14 +48,14 @@ public class ProfileResource {
 	@PUT
 	@Path("/{profileName}")
 	public Profile updateProfile(@PathParam("profileName") String profileName, Profile profile)
-			throws DatabaseOperationException {
+			throws InvalidRequestDataException, DataNotFoundException {
 		LOG.info("PUT: updateProfile(Name: {})", profileName);
 		return profileService.updateProfile(profileName, profile);
 	}
 
 	@DELETE
 	@Path("/{profileName}")
-	public Profile deleteProfile(@PathParam("profileName") String profileName) throws DatabaseOperationException {
+	public Profile deleteProfile(@PathParam("profileName") String profileName) throws DataNotFoundException {
 		LOG.info("DELETE: deleteProfile(Name: {})", profileName);
 		return profileService.deleteProfile(profileName);
 	}
