@@ -4,6 +4,8 @@ import java.net.UnknownHostException;
 import java.util.Calendar;
 import java.util.List;
 
+import javax.ws.rs.core.UriInfo;
+
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,6 +13,8 @@ import org.slf4j.LoggerFactory;
 import com.greydev.messenger.database.DatabaseMock;
 import com.greydev.messenger.exception.DataNotFoundException;
 import com.greydev.messenger.exception.InvalidRequestDataException;
+import com.greydev.messenger.message.comment.CommentResource;
+import com.greydev.messenger.profile.ProfileResource;
 
 public class MessageService {
 
@@ -30,12 +34,16 @@ public class MessageService {
 		return message;
 	}
 
-	public Message addMessage(Message message) throws InvalidRequestDataException {
+	public Message addMessage(UriInfo uriInfo, Message message) throws InvalidRequestDataException {
 		Message newMessage = new Message(getNextId(), message.getAuthor(), message.getText());
 
 		if (!isMessageValid(newMessage)) {
 			throw new InvalidRequestDataException("POST", "/messages");
 		}
+		newMessage.addLink(getUriForSelf(uriInfo, newMessage), "self");
+		newMessage.addLink(getUriForProfile(uriInfo, newMessage), "profile");
+		newMessage.addLink(getUriForComments(uriInfo, newMessage), "comments");
+
 		DatabaseMock.addMessage(newMessage.getId(), newMessage);
 		return newMessage;
 	}
@@ -84,6 +92,19 @@ public class MessageService {
 			return messageList.subList(start, messageList.size());
 		}
 		return messageList.subList(start, start + size);
+	}
+
+	private String getUriForSelf(UriInfo uriInfo, Message message) {
+		return uriInfo.getBaseUriBuilder().path(MessageResource.class).path(Long.toString(message.getId())).toString();
+	}
+
+	private String getUriForProfile(UriInfo uriInfo, Message message) {
+		return uriInfo.getBaseUriBuilder().path(ProfileResource.class).path(message.getAuthor()).toString();
+	}
+
+	private String getUriForComments(UriInfo uriInfo, Message message) {
+		return uriInfo.getBaseUriBuilder().path(MessageResource.class).path(MessageResource.class, "getCommentResource")
+				.path(CommentResource.class).resolveTemplate("messageId", message.getId()).toString();
 	}
 
 	// mandatory properties: Author, Text

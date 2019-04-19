@@ -16,39 +16,37 @@ import javax.ws.rs.core.MediaType;
 @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 public class CommentResource {
-	
+
 	private CommentService commentService = new CommentService();
-	
+
 	@GET
 	public List<Comment> getAllComments(@PathParam("messageId") Long messageId) {
 		return commentService.getAllComments(messageId);
 	}
+
 	@GET
 	@Path("{commentId}")
-	public Comment getComment(@PathParam("messageId") Long messageId,
-@PathParam("commentId") Long commentId) {
+	public Comment getComment(@PathParam("messageId") Long messageId, @PathParam("commentId") Long commentId) {
 		return commentService.getComment(messageId, commentId);
 	}
-	
+
 	@POST
 	public Comment addComment(@PathParam("messageId") Long messageId, Comment comment) {
 		return commentService.addComment(messageId, comment);
 	}
-	
+
 	@PUT
 	@Path("{commentId}")
-	public Comment updateComment(@PathParam("messageId") Long messageId,
-			@PathParam("commentId") Long commentId, Comment comment) {
+	public Comment updateComment(@PathParam("messageId") Long messageId, @PathParam("commentId") Long commentId,
+			Comment comment) {
 		comment.setId(commentId);
 		return commentService.updateComment(messageId, comment);
 	}
-	
+
 	@DELETE
 	@Path("{commentId}")
-	public Comment deleteComment(@PathParam("messageId") Long messageId,
-			@PathParam("commentId") Long commentId) {
+	public Comment deleteComment(@PathParam("messageId") Long messageId, @PathParam("commentId") Long commentId) {
 		return commentService.deleteComment(messageId, commentId);
 	}
 
-	
 }

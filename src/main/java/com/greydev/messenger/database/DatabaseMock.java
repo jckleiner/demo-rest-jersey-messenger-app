@@ -17,10 +17,10 @@ public class DatabaseMock {
 
 	// saving some dummy messages and profiles to the database
 	static {
-		Message message1 = new Message(0L, "Can", "Such a lovely weather today!", new GregorianCalendar(2015, 11, 11));
-		Message message2 = new Message(1L, "Jason", "I own a grocery store!");
-		Profile profile1 = new Profile("jk", "Can", "thx");
-		Profile profile2 = new Profile("johny", "jo", "Eyw");
+		Message message1 = new Message(0L, "can", "Such a lovely weather today!", new GregorianCalendar(2015, 11, 11));
+		Message message2 = new Message(1L, "jason", "I own a grocery store!");
+		Profile profile1 = new Profile("can", "jk", "thx");
+		Profile profile2 = new Profile("jason", "hey there", "Eyw");
 
 		DatabaseMock.addMessage(message1.getId(), message1);
 		DatabaseMock.addMessage(message2.getId(), message2);

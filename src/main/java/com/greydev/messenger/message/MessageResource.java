@@ -63,7 +63,7 @@ public class MessageResource {
 	public Response addMessage(@Context UriInfo uriInfo, Message message)
 			throws URISyntaxException, InvalidRequestDataException {
 		LOG.info("POST: addMessage(message: {}, {})", message.getAuthor(), message.getText());
-		Message addedMessage = messageService.addMessage(message);
+		Message addedMessage = messageService.addMessage(uriInfo, message);
 
 		String id = Long.toString(addedMessage.getId());
 		URI locationUri = uriInfo.getAbsolutePathBuilder().path(id).build();

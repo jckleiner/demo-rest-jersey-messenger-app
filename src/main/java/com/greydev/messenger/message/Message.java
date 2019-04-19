@@ -1,12 +1,15 @@
 package com.greydev.messenger.message;
 
+import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
+import com.greydev.messenger.link.Link;
 import com.greydev.messenger.message.comment.Comment;
 
 @XmlRootElement
@@ -17,6 +20,7 @@ public class Message {
 	private String text;
 	private String author;
 	private Map<Long, Comment> comments = new HashMap<>();
+	private List<Link> links = new ArrayList<>();
 
 	public Message() {
 	}
@@ -93,5 +97,17 @@ public class Message {
 //	public void setComments(Map<Long, Comment> comments) {
 //		this.comments = comments;
 //	}
+
+	public void addLink(String url, String rel) {
+		links.add(new Link(url, rel));
+	}
+
+	public List<Link> getLinks() {
+		return links;
+	}
+
+	public void setLinks(List<Link> links) {
+		this.links = links;
+	}
 
 }
