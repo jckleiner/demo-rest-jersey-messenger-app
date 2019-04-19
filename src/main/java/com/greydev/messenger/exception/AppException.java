@@ -7,19 +7,20 @@ public class AppException extends Exception {
 	private int errorCode;
 	private String errorDescription;
 	private String errorDocumentationLink;
-	private String requestUrl;
+	private String requestUri;
 	private String requestMedhod;
 
 	public AppException() {
 	}
 
-	public AppException(int statusCode, int errorCode, String errorDescription, String errorDocumentationLink, String requestMedhod, String requestUrl) {
+	public AppException(int statusCode, int errorCode, String errorDescription, String errorDocumentationLink,
+			String requestMedhod, String requestUri) {
 		this.statusCode = statusCode;
 		this.errorCode = errorCode;
 		this.errorDescription = errorDescription;
 		this.errorDocumentationLink = errorDocumentationLink;
 		this.requestMedhod = requestMedhod;
-		this.requestUrl = requestUrl;
+		this.requestUri = requestUri;
 	}
 
 	public int getStatusCode() {
@@ -38,8 +39,8 @@ public class AppException extends Exception {
 		return errorDocumentationLink;
 	}
 
-	public String getRequestUrl() {
-		return requestUrl;
+	public String getRequestUri() {
+		return requestUri;
 	}
 
 	public String getRequestMedhod() {

@@ -7,13 +7,13 @@ public class DataNotFoundException extends AppException {
 	private static final int errorCode = 999;
 	private static final String errorDescription = "Requested data not found.";
 	private static final String errorDocumentationLink = "https://www.google.com";
-	
+
 	public DataNotFoundException() {
 		this(null, null);
 	}
-	
-	public DataNotFoundException(String requestMethod, String requestUrl) {
-		super(statusCode, errorCode, errorDescription, errorDocumentationLink, requestMethod, requestUrl);
+
+	public DataNotFoundException(String requestMethod, String requestUri) {
+		super(statusCode, errorCode, errorDescription, errorDocumentationLink, requestMethod, requestUri);
 	}
-	
+
 }

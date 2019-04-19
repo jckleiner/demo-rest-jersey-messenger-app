@@ -1,13 +1,8 @@
 package com.greydev.messenger.message;
 
-import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.List;
-
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.Response;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -15,22 +10,11 @@ import org.slf4j.LoggerFactory;
 
 import com.greydev.messenger.database.DatabaseMock;
 import com.greydev.messenger.exception.DataNotFoundException;
-import com.greydev.messenger.exception.ErrorMessage;
 
 public class MessageService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(MessageService.class);
-	private static long idCount = 0;
-
-	// saving some dummy messages to the database
-	static {
-		Message message1 = new Message(getNextId(), "Can", "Such a lovely weather today!",
-				new GregorianCalendar(2015, 11, 11));
-		Message message2 = new Message(getNextId(), "Jason", "I own a grocery store!");
-
-		DatabaseMock.addMessage(message1.getId(), message1);
-		DatabaseMock.addMessage(message2.getId(), message2);
-	}
+	private static long idCount = 5;
 
 	public List<Message> getAllMessages() {
 		return DatabaseMock.getAllMessagesAsList();
@@ -40,7 +24,7 @@ public class MessageService {
 		Message message = DatabaseMock.getMessage(id);
 
 		if (message == null) {
-			throw new DataNotFoundException("GET", InetAddress.getLocalHost().getHostName() + ":8080/messenger/webapi/messages/" + id);
+			throw new DataNotFoundException("GET", "/messages/" + id);
 		}
 		LOG.info(" -> returning: {}, {}", message.getAuthor(), message.getText());
 		return message;
@@ -48,7 +32,6 @@ public class MessageService {
 
 	public Message addMessage(Message message) {
 		Message newMessage = new Message(getNextId(), message.getAuthor(), message.getText());
-
 
 		if (isMessageValid(newMessage)) {
 			DatabaseMock.addMessage(newMessage.getId(), newMessage);
@@ -65,7 +48,8 @@ public class MessageService {
 		if (isMessageValid(message)) {
 			if (doesMessageExist(message.getId())) {
 				return DatabaseMock.updateMessage(message);
-			} else {
+			}
+			else {
 				DatabaseMock.addMessage(message.getId(), message);
 				return message;
 			}

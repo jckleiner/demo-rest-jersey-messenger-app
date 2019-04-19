@@ -12,7 +12,7 @@ import com.greydev.messenger.message.Message;
 public class CommentService {
 	
 	private Map<Long, Message> messageMap = DatabaseMock.getAllMessagesAsMap();
-	private static long idCount = 150;
+	private static long idCount = 10;
 	
 	public List<Comment> getAllComments(Long messageId) {
 		Map<Long, Comment> comments = messageMap.get(messageId).getComments();

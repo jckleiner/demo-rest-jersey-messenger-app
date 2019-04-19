@@ -17,7 +17,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
 import org.slf4j.Logger;
@@ -35,6 +34,7 @@ public class MessageResource {
 	private static final Logger LOG = LoggerFactory.getLogger(MessageResource.class);
 	private static final MessageService messageService = new MessageService();
 
+	//
 	@GET
 	public List<Message> getAllMessages(@BeanParam MessageFilterBean filterBean) {
 		int year = filterBean.getYear();
@@ -45,7 +45,8 @@ public class MessageResource {
 		// TODO optimize filtering
 		if (year != 0) {
 			return messageService.getAllMessagesForYear(year);
-		} else if (start >= 0 && size > 0) {
+		}
+		else if (start >= 0 && size > 0) {
 			return messageService.getAllMessagesPaginated(start, size);
 		}
 		return messageService.getAllMessages();
@@ -59,11 +60,10 @@ public class MessageResource {
 	}
 
 	@POST
-	public Response addMessage(@Context UriInfo uriInfo, Message message)
-			throws URISyntaxException {
+	public Response addMessage(@Context UriInfo uriInfo, Message message) throws URISyntaxException {
 		LOG.info("POST: addMessage(message: {}, {})", message.getAuthor(), message.getText());
 		Message addedMessage = messageService.addMessage(message);
-		
+
 		String id = Long.toString(addedMessage.getId());
 		URI locationUri = uriInfo.getAbsolutePathBuilder().path(id).build();
 		return Response.created(locationUri).entity(addedMessage).build();

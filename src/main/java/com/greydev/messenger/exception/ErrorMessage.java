@@ -9,21 +9,21 @@ public class ErrorMessage {
 	private int errorCode;
 	private String errorDescription;
 	private String errorDocumentationLink;
-	private String requestUrl;
+	private String requestUri;
 	private String requestMedhod;
 
 	public ErrorMessage() {
 	}
-	
+
 	public ErrorMessage(AppException ex) {
 		this.statusCode = ex.getStatusCode();
 		this.errorCode = ex.getErrorCode();
 		this.errorDescription = ex.getErrorDescription();
 		this.errorDocumentationLink = ex.getErrorDocumentationLink();
-		this.requestUrl = ex.getRequestUrl();
+		this.requestUri = ex.getRequestUri();
 		this.requestMedhod = ex.getRequestMedhod();
 	}
-	
+
 	public ErrorMessage(int statusCode, int errorCode, String errorDescription, String errorDocumentationLink) {
 		this.statusCode = statusCode;
 		this.errorCode = errorCode;
@@ -63,12 +63,12 @@ public class ErrorMessage {
 		this.errorDocumentationLink = errorDocumentationLink;
 	}
 
-	public String getRequestUrl() {
-		return requestUrl;
+	public String getRequestUri() {
+		return requestUri;
 	}
 
-	public void setRequestUrl(String requestUrl) {
-		this.requestUrl = requestUrl;
+	public void setRequestUri(String requestUri) {
+		this.requestUri = requestUri;
 	}
 
 	public String getRequestMedhod() {
@@ -78,5 +78,5 @@ public class ErrorMessage {
 	public void setRequestMedhod(String requestMedhod) {
 		this.requestMedhod = requestMedhod;
 	}
-	
+
 }
