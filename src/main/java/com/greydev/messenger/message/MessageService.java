@@ -40,7 +40,7 @@ public class MessageService {
 		Message message = DatabaseMock.getMessage(id);
 
 		if (message == null) {
-			throw new DataNotFoundException("GET", InetAddress.getLocalHost().getHostName() + "--/messenger/webapi/messages/" + id);
+			throw new DataNotFoundException("GET", InetAddress.getLocalHost().getHostName() + ":8080/messenger/webapi/messages/" + id);
 		}
 		LOG.info(" -> returning: {}, {}", message.getAuthor(), message.getText());
 		return message;
