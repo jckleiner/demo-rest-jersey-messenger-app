@@ -10,28 +10,32 @@ import com.greydev.messenger.message.Message;
 
 //TODO add error handling
 public class CommentService {
-	
+
 	private Map<Long, Message> messageMap = DatabaseMock.getAllMessagesAsMap();
 	private static long idCount = 10;
-	
+
 	public List<Comment> getAllComments(Long messageId) {
 		Map<Long, Comment> comments = messageMap.get(messageId).getComments();
 		List<Comment> resultCommentList = new ArrayList<>(comments.values());
 		return resultCommentList;
 	}
-	
+
 	public Comment getComment(Long messageId, Long commentId) {
 		return messageMap.get(messageId).getComments().get(commentId);
 	}
-	
+
 	public Comment addComment(Long messageId, Comment comment) {
 		comment.setId(getNextId());
 		comment.setCreated(new GregorianCalendar());
+		// limit capacity
+		if (messageMap.size() >= 200) {
+			return null;
+		}
 		messageMap.get(messageId).getComments().put(comment.getId(), comment);
 		return comment;
 	}
-	
-	public Comment updateComment(Long messageId,  Comment comment) {
+
+	public Comment updateComment(Long messageId, Comment comment) {
 		comment.setCreated(new GregorianCalendar());
 		Map<Long, Comment> allComments = messageMap.get(messageId).getComments();
 		allComments.put(comment.getId(), comment);
@@ -42,7 +46,7 @@ public class CommentService {
 		Map<Long, Comment> allComments = messageMap.get(messageId).getComments();
 		return allComments.remove(commentId);
 	}
-	
+
 	private static long getNextId() {
 		return idCount++;
 	}

@@ -41,6 +41,10 @@ public class DatabaseMock {
 	}
 
 	public static void addMessage(Long id, Message message) {
+		// limit capacity
+		if (getAllMessagesAsList().size() >= 200) {
+			return;
+		}
 		messageMap.put(id, message);
 	}
 
@@ -72,6 +76,10 @@ public class DatabaseMock {
 	}
 
 	public static void addProfile(String profileName, Profile profile) {
+		// limit capacity
+		if (getAllProfiles().size() >= 200) {
+			return;
+		}
 		profileMap.put(profileName, profile);
 	}
 

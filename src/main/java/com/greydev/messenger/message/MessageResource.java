@@ -35,7 +35,6 @@ public class MessageResource {
 	private static final Logger LOG = LoggerFactory.getLogger(MessageResource.class);
 	private static final MessageService messageService = new MessageService();
 
-	//
 	@GET
 	public List<Message> getAllMessages(@BeanParam MessageFilterBean filterBean) {
 		int year = filterBean.getYear();

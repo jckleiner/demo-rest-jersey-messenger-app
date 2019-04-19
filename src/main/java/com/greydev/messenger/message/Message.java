@@ -90,8 +90,8 @@ public class Message {
 		return comments;
 	}
 
-	public void setComments(Map<Long, Comment> comments) {
-		this.comments = comments;
-	}
+//	public void setComments(Map<Long, Comment> comments) {
+//		this.comments = comments;
+//	}
 
 }
