@@ -32,8 +32,10 @@ public class MyDateConverter implements ParamConverter<MyDate> {
 
 	@Override
 	public String toString(MyDate value) {
-		// TODO Auto-generated method stub
-		return null;
+		if (value == null) {
+			return null;
+		}
+		return value.toString();
 	}
 
 }
