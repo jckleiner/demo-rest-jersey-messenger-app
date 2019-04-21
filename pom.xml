@@ -26,7 +26,7 @@
 		</plugins>
 	</build>
 
-	<dependencyManagement>
+<!--	<dependencyManagement>
 		<dependencies>
 			<dependency>
 				<groupId>org.glassfish.jersey</groupId>
@@ -34,23 +34,30 @@
 				<version>${jersey.version}</version>
 				<type>pom</type>
 				<scope>import</scope>
-			</dependency>
+			</dependency> 
 		</dependencies>
-	</dependencyManagement>
+	</dependencyManagement>-->
 
 	<dependencies>
 
-		<dependency>
+	<!--	<dependency>
 			<groupId>org.glassfish.jersey.containers</groupId>
 			<artifactId>jersey-container-servlet-core</artifactId>
-			<!-- use the following artifactId if you don't need servlet 2.x compatibility -->
-			<!-- artifactId>jersey-container-servlet</artifactId -->
-		</dependency>
+			 use the following artifactId if you don't need servlet 2.x compatibility -->
+			<!-- artifactId>jersey-container-servlet</artifactId
+		</dependency> -->
+		
+		<dependency>
+        <groupId>org.glassfish.jersey.bundles</groupId>
+        <artifactId>jaxrs-ri</artifactId>
+        <version>2.16</version>
+      </dependency>
 
 		<!-- uncomment this to get JSON support -->
 		<dependency>
 			<groupId>org.glassfish.jersey.media</groupId>
 			<artifactId>jersey-media-moxy</artifactId>
+			<version>2.16</version>
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/org.apache.commons/commons-lang3 -->
