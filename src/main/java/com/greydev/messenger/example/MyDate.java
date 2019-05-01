@@ -1,4 +1,4 @@
-package com.greydev.messenger.database;
+package com.greydev.messenger.example;
 
 public class MyDate {
 

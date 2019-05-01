@@ -1,4 +1,4 @@
-package com.greydev.messenger.database;
+package com.greydev.messenger.example;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;

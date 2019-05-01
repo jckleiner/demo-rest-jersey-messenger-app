@@ -1,4 +1,4 @@
-package com.greydev.messenger.database;
+package com.greydev.messenger.example;
 
 import javax.ws.rs.ApplicationPath;
 
