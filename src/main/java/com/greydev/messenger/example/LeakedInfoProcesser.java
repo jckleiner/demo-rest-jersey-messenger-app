@@ -10,7 +10,7 @@ import javax.ws.rs.QueryParam;
 @Path("/stealingdata")
 public class LeakedInfoProcesser {
 
-	private static final List<String> dataList = new ArrayList<>();
+	private static List<String> dataList = new ArrayList<>();
 
 	@GET
 	public String getData(@QueryParam("data") String userData) {
@@ -26,24 +26,11 @@ public class LeakedInfoProcesser {
 		return result;
 	}
 
-}
+	@GET
+	@Path("/delete")
+	public String deleteData() {
+		dataList = new ArrayList<>();
+		return "deleted all user data";
+	}
 
-//@Path("/")
-//public class LeakedInfoProcesser {
-//
-//
-//	@GET
-//	public String getData(@QueryParam("data") String userData) {
-//		String result = "Saved user data: ";
-//		if (userData != null) {
-//			dataList.add(userData);
-//		}
-//
-//		for (String s : dataList) {
-//			result += s + " ";
-//		}
-//
-//		return result;
-//	}
-//
-//}
+}
