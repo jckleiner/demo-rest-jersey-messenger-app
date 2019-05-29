@@ -7,29 +7,141 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.hibernate.Hibernate;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
+import org.hibernate.cfg.Configuration;
+
 import com.greydev.messenger.message.Message;
+import com.greydev.messenger.message.comment.Comment;
 import com.greydev.messenger.profile.Profile;
 
 public class DatabaseMock {
 
 	private static final Map<Long, Message> messageMap = new HashMap<>();
 	private static final Map<String, Profile> profileMap = new HashMap<>();
+	private static SessionFactory factory = new Configuration()
+			.configure("hibernate.cfg.xml")
+			.buildSessionFactory();
 
 	// saving some dummy messages and profiles to the database
 	static {
-		Message message1 = new Message(0L, "can", "Such a lovely weather today!", new GregorianCalendar(2015, 11, 11));
-		Message message2 = new Message(1L, "jason", "I own a grocery store!");
-		Profile profile1 = new Profile("can", "jk", "thx");
-		Profile profile2 = new Profile("jason", "hey there", "Eyw");
 
-		DatabaseMock.addMessage(message1.getId(), message1);
-		DatabaseMock.addMessage(message2.getId(), message2);
-		DatabaseMock.addProfile(profile1.getProfileName(), profile1);
-		DatabaseMock.addProfile(profile2.getProfileName(), profile2);
+		Message message1 = new Message("can", "Such a lovely weather today!", new GregorianCalendar(2015, 11, 11));
+		Message message2 = new Message("jason", "I own a grocery store!", new GregorianCalendar(2011, 04, 04));
+
+		message1.getCommentList().add(new Comment("Johny", "First Comment", message1));
+		message1.getCommentList().add(new Comment("Emily", "Grocery store", message1));
+
+		message2.getCommentList().add(new Comment("Sally", "Hey there", message2));
+		message2.getCommentList().add(new Comment("Sally2", "Hey there2", message2));
+
+		DatabaseMock.addMessageHibernate(message1);
+		DatabaseMock.addMessageHibernate(message2);
+
+		//		System.out.println("-------------------------------- TEST ----------------------------");
+		//		List<Message> test = getAllMessagesAsListHibernate();
+		//		test.forEach(m -> System.out.println(m.getAuthor()));
+		//
+		//		Message one = getMessageHibernate(1L);
+		//		Message four = getMessageHibernate(4L);
+		//		System.out.println("one's author: " + one.getAuthor());
+		//		System.out.println("four's author: " + four.getAuthor());
+		//
+		//		one.getCommentList().forEach(c -> System.out.println("comment: " + c.getText()));
+
+		//		Message message4 = new Message(0L, "can", "Such a lovely weather today!", new GregorianCalendar(2015, 11, 11));
+		//		Message message5 = new Message(1L, "jason", "I own a grocery store!");
+		//		Profile profile1 = new Profile("can", "jk", "thx");
+		//		Profile profile2 = new Profile("jason", "hey there", "Eyw");
+		//
+		//		DatabaseMock.addMessage(message4.getId(), message4);
+		//		DatabaseMock.addMessage(message5.getId(), message5);
+		//		DatabaseMock.addProfile(profile1.getProfileName(), profile1);
+		//		DatabaseMock.addProfile(profile2.getProfileName(), profile2);
+	}
+
+	public static Message deleteMessageHibernate(Long id) {
+
+		Message result = null;
+		final Session session = factory.openSession();
+		Transaction transaction = null;
+		try {
+			transaction = session.beginTransaction();
+
+			session.delete(id);
+
+			transaction.commit();
+			session.close();
+
+		} catch (Exception e) {
+			if (transaction != null) {
+				transaction.rollback();
+			}
+			e.printStackTrace();
+		}
+		return result;
+
+	}
+
+	public static Message updateMessageHibernate(Message message) {
+		return messageMap.replace(message.getId(), message);
+	}
+
+	public static Message getMessageHibernate(Long id) {
+		Message result = null;
+		final Session session = factory.openSession();
+		Transaction transaction = null;
+		try {
+			transaction = session.beginTransaction();
+
+			result = session.get(Message.class, id);
+
+			transaction.commit();
+			session.close();
+
+		} catch (Exception e) {
+			if (transaction != null) {
+				transaction.rollback();
+			}
+			e.printStackTrace();
+		}
+		return result;
+
+	}
+
+	public static List<Message> getAllMessagesAsListHibernate() {
+		List<Message> results = null;
+		final Session session = factory.openSession();
+		Transaction transaction = null;
+		try {
+			transaction = session.beginTransaction();
+
+			results = session.createQuery("from Message").list();
+
+			transaction.commit();
+			session.close();
+
+		} catch (Exception e) {
+			if (transaction != null) {
+				transaction.rollback();
+			}
+			e.printStackTrace();
+		}
+
+		return results;
 	}
 
 	public static List<Message> getAllMessagesAsList() {
-		return new ArrayList<Message>(messageMap.values());
+		//TODO unproxy all and return the new version
+		List<Message> test = new ArrayList<>();
+		getAllMessagesAsListHibernate().forEach(message -> {
+			test.add((Message) Hibernate.unproxy(message));
+		});
+		System.out.printf("found %d messages...", test.size());
+		return test;
+		//		return new ArrayList<Message>(messageMap.values());
 	}
 
 	public static Map<Long, Message> getAllMessagesAsMap() {
@@ -38,6 +150,25 @@ public class DatabaseMock {
 
 	public static Message getMessage(Long id) {
 		return messageMap.get(id);
+	}
+
+	public static void addMessageHibernate(Message message) {
+		final Session session = factory.openSession();
+		Transaction transaction = null;
+		try {
+			transaction = session.beginTransaction();
+
+			session.persist(message);
+
+			transaction.commit();
+			session.close();
+
+		} catch (Exception e) {
+			if (transaction != null) {
+				transaction.rollback();
+			}
+			e.printStackTrace();
+		}
 	}
 
 	public static void addMessage(Long id, Message message) {

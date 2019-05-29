@@ -22,7 +22,8 @@ public class MessageService {
 	private static long idCount = 5;
 
 	public List<Message> getAllMessages() {
-		return DatabaseMock.getAllMessagesAsList();
+		//		return DatabaseMock.getAllMessagesAsList();
+		return DatabaseMock.getAllMessagesAsListHibernate();
 	}
 
 	public Message getMessage(Long id) throws DataNotFoundException, UnknownHostException {
@@ -35,16 +36,18 @@ public class MessageService {
 	}
 
 	public Message addMessage(UriInfo uriInfo, Message message) throws InvalidRequestDataException {
-		Message newMessage = new Message(getNextId(), message.getAuthor(), message.getText());
+		//		Message newMessage = new Message(getNextId(), message.getAuthor(), message.getText());
+		Message newMessage = new Message(message.getAuthor(), message.getText());
 
 		if (!isMessageValid(newMessage)) {
 			throw new InvalidRequestDataException("POST", "/messages");
 		}
-		newMessage.addLink(getUriForSelf(uriInfo, newMessage), "self");
-		newMessage.addLink(getUriForProfile(uriInfo, newMessage), "profile");
-		newMessage.addLink(getUriForComments(uriInfo, newMessage), "comments");
+		//		newMessage.addLink(getUriForSelf(uriInfo, newMessage), "self");
+		//		newMessage.addLink(getUriForProfile(uriInfo, newMessage), "profile");
+		//		newMessage.addLink(getUriForComments(uriInfo, newMessage), "comments");
 
-		DatabaseMock.addMessage(newMessage.getId(), newMessage);
+		//		DatabaseMock.addMessage(newMessage.getId(), newMessage);
+		DatabaseMock.addMessageHibernate(newMessage);
 		return newMessage;
 	}
 

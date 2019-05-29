@@ -2,20 +2,61 @@ package com.greydev.messenger.message.comment;
 
 import java.util.GregorianCalendar;
 
-import javax.xml.bind.annotation.XmlRootElement;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.xml.bind.annotation.XmlTransient;
 
-@XmlRootElement
+import com.greydev.messenger.message.Message;
+
+@Entity
 public class Comment {
-	
-	private GregorianCalendar created;
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.SEQUENCE)
+	@Column(name = "comment_id")
 	private Long id;
+	@Column(name = "created")
+	private GregorianCalendar created;
+	@Column(name = "text")
 	private String text;
+	@Column(name = "author")
 	private String author;
-	
+	@ManyToOne
+	//	@JoinColumn(name = "message_id")
+	private Message message;
+
 	public Comment() {
-		
+
 	}
-	
+
+	@XmlTransient
+	public Message getMessage() {
+		return message;
+	}
+
+	public void setMessage(Message message) {
+		this.message = message;
+	}
+
+	public Comment(String author, String text) {
+		super();
+		this.created = new GregorianCalendar();
+		this.text = text;
+		this.author = author;
+	}
+
+	public Comment(String author, String text, Message message) {
+		super();
+		this.created = new GregorianCalendar();
+		this.text = text;
+		this.author = author;
+		this.message = message;
+	}
+
 	public Comment(Long id, String author, String text) {
 		super();
 		this.created = new GregorianCalendar();
