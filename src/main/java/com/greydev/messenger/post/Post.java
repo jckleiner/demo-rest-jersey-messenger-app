@@ -24,7 +24,7 @@ public class Post {
 
 	private GregorianCalendar created;
 	@Id
-	@GenericGenerator(name = "myCustomIdGenerator", strategy = "com.greydev.messenger.database.UseIdOrGenerate")
+	@GenericGenerator(name = "myCustomIdGenerator", strategy = "com.greydev.messenger.UseIdOrGenerate")
 	@GeneratedValue(generator = "myCustomIdGenerator")
 	@Column(name = "post_id")
 	private Long id;

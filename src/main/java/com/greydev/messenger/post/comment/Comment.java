@@ -17,7 +17,7 @@ import com.greydev.messenger.post.Post;
 public class Comment {
 
 	@Id
-	@GenericGenerator(name = "myCustomIdGenerator", strategy = "com.greydev.messenger.database.UseIdOrGenerate")
+	@GenericGenerator(name = "myCustomIdGenerator", strategy = "com.greydev.messenger.UseIdOrGenerate")
 	@GeneratedValue(generator = "myCustomIdGenerator")
 	@Column(name = "comment_id")
 	private Long id;
