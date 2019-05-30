@@ -1,16 +1,16 @@
-package com.greydev.messenger.message.comment;
+package com.greydev.messenger.post.comment;
 
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.greydev.messenger.message.Message;
+import com.greydev.messenger.post.Post;
 
 //TODO add error handling
 public class CommentService {
 
-	private Map<Long, Message> messageMap = new HashMap<>();
+	private Map<Long, Post> messageMap = new HashMap<>();
 	private static long idCount = 10;
 
 	public List<Comment> getAllComments(Long messageId) {

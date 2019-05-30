@@ -1,4 +1,4 @@
-package com.greydev.messenger.message.comment;
+package com.greydev.messenger.post.comment;
 
 import java.util.GregorianCalendar;
 
@@ -11,7 +11,7 @@ import javax.xml.bind.annotation.XmlTransient;
 
 import org.hibernate.annotations.GenericGenerator;
 
-import com.greydev.messenger.message.Message;
+import com.greydev.messenger.post.Post;
 
 @Entity
 public class Comment {
@@ -28,19 +28,19 @@ public class Comment {
 	@Column(name = "author")
 	private String author;
 	@ManyToOne
-	private Message message;
+	private Post post;
 
 	public Comment() {
 
 	}
 
 	@XmlTransient
-	public Message getMessage() {
-		return message;
+	public Post getPost() {
+		return post;
 	}
 
-	public void setMessage(Message message) {
-		this.message = message;
+	public void setPost(Post post) {
+		this.post = post;
 	}
 
 	public Comment(String author, String text) {
@@ -50,21 +50,21 @@ public class Comment {
 		this.author = author;
 	}
 
-	public Comment(String author, String text, Message message) {
+	public Comment(String author, String text, Post post) {
 		super();
 		this.created = new GregorianCalendar();
 		this.text = text;
 		this.author = author;
-		this.message = message;
+		this.post = post;
 	}
 
-	public Comment(Long id, String author, String text, Message message) {
+	public Comment(Long id, String author, String text, Post post) {
 		super();
 		this.created = new GregorianCalendar();
 		this.text = text;
 		this.author = author;
 		this.id = id;
-		this.message = message;
+		this.post = post;
 	}
 
 	public Comment(Long id, String author, String text) {

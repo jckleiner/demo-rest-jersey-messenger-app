@@ -1,4 +1,4 @@
-package com.greydev.messenger.message;
+package com.greydev.messenger.post;
 
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
@@ -16,17 +16,17 @@ import javax.xml.bind.annotation.XmlRootElement;
 import org.hibernate.annotations.GenericGenerator;
 
 import com.greydev.messenger.link.Link;
-import com.greydev.messenger.message.comment.Comment;
+import com.greydev.messenger.post.comment.Comment;
 
 @Entity
 @XmlRootElement
-public class Message {
+public class Post {
 
 	private GregorianCalendar created;
 	@Id
 	@GenericGenerator(name = "myCustomIdGenerator", strategy = "com.greydev.messenger.database.UseIdOrGenerate")
 	@GeneratedValue(generator = "myCustomIdGenerator")
-	@Column(name = "message_id")
+	@Column(name = "post_id")
 	private Long id;
 	@Column(name = "text")
 	private String text;
@@ -37,7 +37,7 @@ public class Message {
 	@Transient
 	private List<Link> links = new ArrayList<>();
 
-	public Message() {
+	public Post() {
 	}
 
 	public List<Comment> getComments() {
@@ -48,13 +48,13 @@ public class Message {
 		this.comments = comments;
 	}
 
-	public Message(String author, String text, GregorianCalendar date) {
+	public Post(String author, String text, GregorianCalendar date) {
 		this.author = author;
 		this.text = text;
 		this.created = date;
 	}
 
-	public Message(String author, String text) {
+	public Post(String author, String text) {
 		this.author = author;
 		this.text = text;
 		this.created = new GregorianCalendar();
