@@ -1,4 +1,4 @@
-package com.greydev.messenger.database;
+package com.greydev.messenger.test;
 
 import javax.persistence.Column;
 import javax.persistence.Transient;

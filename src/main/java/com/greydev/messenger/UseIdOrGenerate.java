@@ -1,4 +1,4 @@
-package com.greydev.messenger.database;
+package com.greydev.messenger;
 
 import java.io.Serializable;
 

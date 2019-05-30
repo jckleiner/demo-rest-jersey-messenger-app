@@ -7,7 +7,7 @@ import java.util.Map;
 
 import org.hibernate.SessionFactory;
 
-import com.greydev.messenger.database.SessionFactorySingleton;
+import com.greydev.messenger.SessionFactorySingleton;
 
 public class ProfileDao {
 

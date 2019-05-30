@@ -9,7 +9,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 
-import com.greydev.messenger.database.SessionFactorySingleton;
+import com.greydev.messenger.SessionFactorySingleton;
 import com.greydev.messenger.post.comment.Comment;
 import com.greydev.messenger.post.comment.CommentDao;
 

@@ -1,6 +1,5 @@
-package com.greydev.messenger.database;
+package com.greydev.messenger.test;
 
-import java.sql.Connection;
 import java.sql.DriverManager;
 
 public class JdbcTest {
@@ -14,7 +13,7 @@ public class JdbcTest {
 
 		try {
 			System.out.println("Connecting to DB");
-			Connection myConn = DriverManager.getConnection(jdbcUrl, userName, password);
+			DriverManager.getConnection(jdbcUrl, userName, password);
 			System.out.println("success");
 		} catch (Exception e) {
 			e.printStackTrace();

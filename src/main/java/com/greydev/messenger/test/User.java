@@ -1,4 +1,4 @@
-package com.greydev.messenger.database;
+package com.greydev.messenger.test;
 
 import java.util.ArrayList;
 import java.util.HashSet;

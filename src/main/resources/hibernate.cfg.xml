@@ -30,11 +30,11 @@
         <mapping class="com.greydev.messenger.post.Post" />
         <mapping class="com.greydev.messenger.profile.Profile" />
         <mapping class="com.greydev.messenger.link.Link" />
-        <mapping class="com.greydev.messenger.database.Vehicle" />
+        <mapping class="com.greydev.messenger.test.Vehicle" />
         <!--   
         -->
-        <mapping class="com.greydev.messenger.database.User" />
-        <mapping class="com.greydev.messenger.database.Address" />
+        <mapping class="com.greydev.messenger.test.User" />
+        <mapping class="com.greydev.messenger.test.Address" />
 
     </session-factory>
 </hibernate-configuration>

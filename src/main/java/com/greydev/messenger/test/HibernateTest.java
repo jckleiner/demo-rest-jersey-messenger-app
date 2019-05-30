@@ -1,4 +1,4 @@
-package com.greydev.messenger.database;
+package com.greydev.messenger.test;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;

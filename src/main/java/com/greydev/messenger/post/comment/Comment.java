@@ -31,7 +31,6 @@ public class Comment {
 	private Post post;
 
 	public Comment() {
-
 	}
 
 	@XmlTransient
