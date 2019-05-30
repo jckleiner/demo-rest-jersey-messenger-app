@@ -1,27 +1,28 @@
 package com.greydev.messenger.message.comment;
 
-import java.util.ArrayList;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.greydev.messenger.database.DatabaseMock;
 import com.greydev.messenger.message.Message;
 
 //TODO add error handling
 public class CommentService {
 
-	private Map<Long, Message> messageMap = DatabaseMock.getAllMessagesAsMap();
+	private Map<Long, Message> messageMap = new HashMap<>();
 	private static long idCount = 10;
 
 	public List<Comment> getAllComments(Long messageId) {
-		Map<Long, Comment> comments = messageMap.get(messageId).getComments();
-		List<Comment> resultCommentList = new ArrayList<>(comments.values());
-		return resultCommentList;
+		//		Map<Long, Comment> comments = messageMap.get(messageId).getComments();
+		//		List<Comment> resultCommentList = new ArrayList<>(comments.values());
+		//		return resultCommentList;
+		return null;
 	}
 
 	public Comment getComment(Long messageId, Long commentId) {
-		return messageMap.get(messageId).getComments().get(commentId);
+		//		return messageMap.get(messageId).getComments().get(commentId);
+		return null;
 	}
 
 	public Comment addComment(Long messageId, Comment comment) {
@@ -31,20 +32,22 @@ public class CommentService {
 		if (messageMap.size() >= 200) {
 			return null;
 		}
-		messageMap.get(messageId).getComments().put(comment.getId(), comment);
+		//		messageMap.get(messageId).getComments().put(comment.getId(), comment);
 		return comment;
 	}
 
 	public Comment updateComment(Long messageId, Comment comment) {
 		comment.setCreated(new GregorianCalendar());
-		Map<Long, Comment> allComments = messageMap.get(messageId).getComments();
-		allComments.put(comment.getId(), comment);
-		return comment;
+		//		Map<Long, Comment> allComments = messageMap.get(messageId).getComments();
+		//		allComments.put(comment.getId(), comment);
+		//		return comment;
+		return null;
 	}
 
 	public Comment deleteComment(Long messageId, Long commentId) {
-		Map<Long, Comment> allComments = messageMap.get(messageId).getComments();
-		return allComments.remove(commentId);
+		//		Map<Long, Comment> allComments = messageMap.get(messageId).getComments();
+		//		return allComments.remove(commentId);
+		return null;
 	}
 
 	private static long getNextId() {

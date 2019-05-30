@@ -75,6 +75,7 @@ public class MessageResource {
 	public Message updateMessage(@PathParam("messageId") Long messageId, Message message)
 			throws InvalidRequestDataException {
 		LOG.info("PUT: updateMessage(id: {})", messageId);
+		System.out.printf("PUT: updateMessage(author: %s)\n", message.getAuthor());
 		return messageService.updateMessage(messageId, message);
 	}
 

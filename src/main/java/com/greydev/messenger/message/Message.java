@@ -2,20 +2,18 @@ package com.greydev.messenger.message;
 
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
+
+import org.hibernate.annotations.GenericGenerator;
 
 import com.greydev.messenger.link.Link;
 import com.greydev.messenger.message.comment.Comment;
@@ -26,37 +24,28 @@ public class Message {
 
 	private GregorianCalendar created;
 	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE)
+	@GenericGenerator(name = "myCustomIdGenerator", strategy = "com.greydev.messenger.database.UseIdOrGenerate")
+	@GeneratedValue(generator = "myCustomIdGenerator")
 	@Column(name = "message_id")
 	private Long id;
 	@Column(name = "text")
 	private String text;
 	@Column(name = "author")
 	private String author;
-	@Transient
-	private Map<Long, Comment> comments = new HashMap<>();
-	@OneToMany(cascade = javax.persistence.CascadeType.PERSIST, mappedBy = "message", fetch = FetchType.EAGER)
-	private List<Comment> commentList = new ArrayList<>();
+	@OneToMany(cascade = javax.persistence.CascadeType.ALL, fetch = FetchType.EAGER)
+	private List<Comment> comments = new ArrayList<>();
 	@Transient
 	private List<Link> links = new ArrayList<>();
 
 	public Message() {
 	}
 
-	public void setComments(Map<Long, Comment> comments) {
-		this.comments = comments;
+	public List<Comment> getComments() {
+		return comments;
 	}
 
-	public Message(Long id, String author, String text) {
-		this.author = author;
-		//		this.id = id;
-		this.text = text;
-		this.created = new GregorianCalendar();
-
-		//		// add dummy comments for each message
-		//		this.comments.put(1L, new Comment(1L, author, "First Comment"));
-		//		this.comments.put(2L, new Comment(2L, author, "Grocery store"));
-		//		this.comments.put(3L, new Comment(3L, author, "Hey there"));
+	public void setComments(List<Comment> comments) {
+		this.comments = comments;
 	}
 
 	public Message(String author, String text, GregorianCalendar date) {
@@ -69,35 +58,6 @@ public class Message {
 		this.author = author;
 		this.text = text;
 		this.created = new GregorianCalendar();
-	}
-
-	public Message(Long id, String author, String text, GregorianCalendar date) {
-		this.author = author;
-		//		this.id = id;
-		this.text = text;
-		this.created = date;
-
-		//		// add dummy comments for each message
-		//		this.comments.put(1L, new Comment(1L, author, "First Comment"));
-		//		this.comments.put(2L, new Comment(2L, author, "Grocery store"));
-		//		this.comments.put(3L, new Comment(3L, author, "Hey there"));
-	}
-
-	public Message(Long id, String author, String text, GregorianCalendar date, Map<Long, Comment> comments) {
-		this.author = author;
-		//		this.id = id;
-		this.text = text;
-		this.created = date;
-		this.comments = comments;
-	}
-
-	//	@XmlTransient
-	public List<Comment> getCommentList() {
-		return commentList;
-	}
-
-	public void setCommentList(List<Comment> commentList) {
-		this.commentList = commentList;
 	}
 
 	public void setAuthor(String author) {
@@ -131,15 +91,6 @@ public class Message {
 	public void setCreated(GregorianCalendar date) {
 		created = date;
 	}
-
-	@XmlTransient
-	public Map<Long, Comment> getComments() {
-		return comments;
-	}
-
-	//	public void setComments(Map<Long, Comment> comments) {
-	//		this.comments = comments;
-	//	}
 
 	public void addLink(String url, String rel) {
 		links.add(new Link(url, rel));

@@ -27,7 +27,8 @@ public class MessageService {
 	}
 
 	public Message getMessage(Long id) throws DataNotFoundException, UnknownHostException {
-		Message message = DatabaseMock.getMessage(id);
+		//		Message message = DatabaseMock.getMessage(id);
+		Message message = DatabaseMock.getMessageHibernate(id);
 
 		if (message == null) {
 			throw new DataNotFoundException("GET", "/messages/" + id);
@@ -38,6 +39,12 @@ public class MessageService {
 	public Message addMessage(UriInfo uriInfo, Message message) throws InvalidRequestDataException {
 		//		Message newMessage = new Message(getNextId(), message.getAuthor(), message.getText());
 		Message newMessage = new Message(message.getAuthor(), message.getText());
+		newMessage.setComments(message.getComments());
+		newMessage.getComments().forEach(comment -> {
+			System.out.println("setting parent message inside comment...");
+			comment.setMessage(newMessage);
+			comment.setId(null);
+		});
 
 		if (!isMessageValid(newMessage)) {
 			throw new InvalidRequestDataException("POST", "/messages");
@@ -47,30 +54,39 @@ public class MessageService {
 		//		newMessage.addLink(getUriForComments(uriInfo, newMessage), "comments");
 
 		//		DatabaseMock.addMessage(newMessage.getId(), newMessage);
-		DatabaseMock.addMessageHibernate(newMessage);
+		newMessage.setId(DatabaseMock.addMessageHibernate(newMessage));
 		return newMessage;
 	}
 
 	public Message updateMessage(Long queryParamMessageId, Message message) throws InvalidRequestDataException {
 		// ignore the id inside the received message, use the url param id
 		message.setId(queryParamMessageId);
+		message.getComments().forEach(comment -> {
+			System.out.println("setting parent message inside comment...");
+			comment.setMessage(message);
+			comment.setId(null);
+		});
 
 		if (!isMessageValid(message)) {
 			throw new InvalidRequestDataException("PUT", "/messages");
 		}
 
 		if (doesMessageExist(message.getId())) {
-			DatabaseMock.updateMessage(message);
+			DatabaseMock.updateMessageHibernate(message);
 			return message;
 		}
 		else {
-			DatabaseMock.addMessage(message.getId(), message);
+			System.out.println(" * * * message id: " + message.getId());
+			System.out.println(" * * * comment0 id: " + message.getComments().get(0).getId());
+			message.setId(DatabaseMock.addMessageHibernate(message));
+			System.out.println(" * * * message id: " + message.getId());
+			System.out.println(" * * * comment0 id: " + message.getComments().get(0).getId());
 			return message;
 		}
 	}
 
 	public Message deleteMessage(Long id) throws DataNotFoundException {
-		Message response = DatabaseMock.deleteMessage(id);
+		Message response = DatabaseMock.deleteMessageHibernate(id);
 
 		if (response == null) {
 			throw new DataNotFoundException("DELETE", "/messages/" + id);
@@ -89,7 +105,7 @@ public class MessageService {
 	}
 
 	public List<Message> getAllMessagesPaginated(int start, int size) {
-		List<Message> messageList = DatabaseMock.getAllMessagesAsList();
+		List<Message> messageList = DatabaseMock.getAllMessagesAsListHibernate();
 
 		if ((start + size) >= messageList.size()) {
 			return messageList.subList(start, messageList.size());
@@ -116,7 +132,7 @@ public class MessageService {
 	}
 
 	public boolean doesMessageExist(Long id) {
-		return (DatabaseMock.getMessage(id) != null);
+		return (DatabaseMock.getMessageHibernate(id) != null);
 	}
 
 	private static long getNextId() {

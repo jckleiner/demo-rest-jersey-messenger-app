@@ -1,18 +1,18 @@
 package com.greydev.messenger.database;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 @Entity
 @Table(name = "user")
@@ -26,18 +26,22 @@ public class User {
 	@Column(name = "user_name")
 	private String userName = "userName123";
 
-	@OneToOne(cascade = CascadeType.PERSIST)
-	private Address address = new Address();
+	@ElementCollection
+	private Set<Address> address = new HashSet<>();
 
-	@OneToMany(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
+	@Transient
 	private List<Vehicle> vehicles = new ArrayList<>();
 
 	public User() {
 
 	}
 
-	public Address getAddress() {
+	public Set<Address> getAddress() {
 		return address;
+	}
+
+	public void setAddress(Set<Address> address) {
+		this.address = address;
 	}
 
 	public List<Vehicle> getVehicles() {
@@ -46,10 +50,6 @@ public class User {
 
 	public void setVehicles(List<Vehicle> vehicles) {
 		this.vehicles = vehicles;
-	}
-
-	public void setAddress(Address address) {
-		this.address = address;
 	}
 
 	public User(String userName, String phoneNum, int age) {

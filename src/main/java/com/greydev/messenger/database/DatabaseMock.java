@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -19,7 +18,6 @@ import com.greydev.messenger.profile.Profile;
 
 public class DatabaseMock {
 
-	private static final Map<Long, Message> messageMap = new HashMap<>();
 	private static final Map<String, Profile> profileMap = new HashMap<>();
 	private static SessionFactory factory = new Configuration()
 			.configure("hibernate.cfg.xml")
@@ -31,11 +29,11 @@ public class DatabaseMock {
 		Message message1 = new Message("can", "Such a lovely weather today!", new GregorianCalendar(2015, 11, 11));
 		Message message2 = new Message("jason", "I own a grocery store!", new GregorianCalendar(2011, 04, 04));
 
-		message1.getCommentList().add(new Comment("Johny", "First Comment", message1));
-		message1.getCommentList().add(new Comment("Emily", "Grocery store", message1));
+		message1.getComments().add(new Comment("Johny", "First Comment", message1));
+		message1.getComments().add(new Comment("Emily", "Grocery store", message1));
 
-		message2.getCommentList().add(new Comment("Sally", "Hey there", message2));
-		message2.getCommentList().add(new Comment("Sally2", "Hey there2", message2));
+		message2.getComments().add(new Comment("Sally", "Hey there", message2));
+		message2.getComments().add(new Comment("Sally2", "Hey there2", message2));
 
 		DatabaseMock.addMessageHibernate(message1);
 		DatabaseMock.addMessageHibernate(message2);
@@ -62,15 +60,84 @@ public class DatabaseMock {
 		//		DatabaseMock.addProfile(profile2.getProfileName(), profile2);
 	}
 
-	public static Message deleteMessageHibernate(Long id) {
+	//	public static void addMessageHibernate(Message message) {
+	//		final Session session = factory.openSession();
+	//		Transaction transaction = null;
+	//		try {
+	//			transaction = session.beginTransaction();
+	//
+	//			System.out.println("DatabaseMock.addMessageHibernate() - Comment list in message: ");
+	//			message.getCommentList().forEach(comment -> {
+	//				System.out.println(comment.getAuthor());
+	//				comment.setMessage(message);
+	//				session.save(comment);
+	//			});
+	//
+	//			session.save(message);
+	//
+	//			transaction.commit();
+	//			session.close();
+	//
+	//		} catch (Exception e) {
+	//			if (transaction != null) {
+	//				transaction.rollback();
+	//			}
+	//			e.printStackTrace();
+	//		}
+	//	}
 
-		Message result = null;
+	public static Long addMessageHibernate(Message message) {
+		Long savedEntityId = null;
 		final Session session = factory.openSession();
 		Transaction transaction = null;
 		try {
 			transaction = session.beginTransaction();
 
-			session.delete(id);
+			// this also saves the Comment collection inside message
+			savedEntityId = (Long) session.save(message);
+
+			transaction.commit();
+			session.close();
+		} catch (Exception e) {
+			if (transaction != null) {
+				transaction.rollback();
+			}
+			e.printStackTrace();
+		}
+		return savedEntityId;
+	}
+
+	public static List<Comment> getComments(Message message) {
+		List<Comment> comments = null;
+		final Session session = factory.openSession();
+		Transaction transaction = null;
+		try {
+			transaction = session.beginTransaction();
+			comments = session.createQuery("from Comment where message.id=" + message.getId()).list();
+			transaction.commit();
+			session.close();
+		} catch (Exception e) {
+			if (transaction != null) {
+				transaction.rollback();
+			}
+			e.printStackTrace();
+		}
+		return comments;
+	}
+
+	public static Message updateMessageHibernate(Message message) {
+		final Session session = factory.openSession();
+		Transaction transaction = null;
+		try {
+			transaction = session.beginTransaction();
+			// first delete comments from the message which will be updated
+			List<Comment> commentsToDelete = getComments(message);
+			commentsToDelete.forEach(comment -> {
+				System.out.println("Deleting comment ... " + comment.getAuthor());
+				session.delete(comment);
+			});
+			// update/replace old message with the new one
+			session.update(message);
 
 			transaction.commit();
 			session.close();
@@ -80,13 +147,33 @@ public class DatabaseMock {
 				transaction.rollback();
 			}
 			e.printStackTrace();
+			return null;
 		}
-		return result;
+		return message;
 
 	}
 
-	public static Message updateMessageHibernate(Message message) {
-		return messageMap.replace(message.getId(), message);
+	public static Message deleteMessageHibernate(Long id) {
+		Message messageToDelete = null;
+		final Session session = factory.openSession();
+		Transaction transaction = null;
+		try {
+			transaction = session.beginTransaction();
+
+			messageToDelete = getMessageHibernate(id);
+			if (messageToDelete != null) {
+				session.delete(messageToDelete);
+			}
+
+			transaction.commit();
+			session.close();
+		} catch (Exception e) {
+			if (transaction != null) {
+				transaction.rollback();
+			}
+			e.printStackTrace();
+		}
+		return messageToDelete;
 	}
 
 	public static Message getMessageHibernate(Long id) {
@@ -122,75 +209,19 @@ public class DatabaseMock {
 
 			transaction.commit();
 			session.close();
-
 		} catch (Exception e) {
 			if (transaction != null) {
 				transaction.rollback();
 			}
 			e.printStackTrace();
 		}
-
 		return results;
-	}
-
-	public static List<Message> getAllMessagesAsList() {
-		//TODO unproxy all and return the new version
-		List<Message> test = new ArrayList<>();
-		getAllMessagesAsListHibernate().forEach(message -> {
-			test.add((Message) Hibernate.unproxy(message));
-		});
-		System.out.printf("found %d messages...", test.size());
-		return test;
-		//		return new ArrayList<Message>(messageMap.values());
-	}
-
-	public static Map<Long, Message> getAllMessagesAsMap() {
-		return messageMap;
-	}
-
-	public static Message getMessage(Long id) {
-		return messageMap.get(id);
-	}
-
-	public static void addMessageHibernate(Message message) {
-		final Session session = factory.openSession();
-		Transaction transaction = null;
-		try {
-			transaction = session.beginTransaction();
-
-			session.persist(message);
-
-			transaction.commit();
-			session.close();
-
-		} catch (Exception e) {
-			if (transaction != null) {
-				transaction.rollback();
-			}
-			e.printStackTrace();
-		}
-	}
-
-	public static void addMessage(Long id, Message message) {
-		// limit capacity
-		if (getAllMessagesAsList().size() >= 200) {
-			return;
-		}
-		messageMap.put(id, message);
-	}
-
-	public static Message deleteMessage(Long id) {
-		return messageMap.remove(id);
-	}
-
-	public static Message updateMessage(Message message) {
-		return messageMap.replace(message.getId(), message);
 	}
 
 	public static List<Message> getAllMessagesForYear(int year) {
 		List<Message> resultSet = new ArrayList<>();
 
-		for (Message message : getAllMessagesAsList()) {
+		for (Message message : getAllMessagesAsListHibernate()) {
 			if (message.getCreated().get(Calendar.YEAR) == year) {
 				resultSet.add(message);
 			}

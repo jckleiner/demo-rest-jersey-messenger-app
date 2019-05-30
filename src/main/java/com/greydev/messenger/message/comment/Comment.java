@@ -5,10 +5,11 @@ import java.util.GregorianCalendar;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.xml.bind.annotation.XmlTransient;
+
+import org.hibernate.annotations.GenericGenerator;
 
 import com.greydev.messenger.message.Message;
 
@@ -16,7 +17,8 @@ import com.greydev.messenger.message.Message;
 public class Comment {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE)
+	@GenericGenerator(name = "myCustomIdGenerator", strategy = "com.greydev.messenger.database.UseIdOrGenerate")
+	@GeneratedValue(generator = "myCustomIdGenerator")
 	@Column(name = "comment_id")
 	private Long id;
 	@Column(name = "created")
@@ -26,7 +28,6 @@ public class Comment {
 	@Column(name = "author")
 	private String author;
 	@ManyToOne
-	//	@JoinColumn(name = "message_id")
 	private Message message;
 
 	public Comment() {
@@ -54,6 +55,15 @@ public class Comment {
 		this.created = new GregorianCalendar();
 		this.text = text;
 		this.author = author;
+		this.message = message;
+	}
+
+	public Comment(Long id, String author, String text, Message message) {
+		super();
+		this.created = new GregorianCalendar();
+		this.text = text;
+		this.author = author;
+		this.id = id;
 		this.message = message;
 	}
 

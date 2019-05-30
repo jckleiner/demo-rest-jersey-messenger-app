@@ -1,17 +1,15 @@
 package com.greydev.messenger.database;
 
 import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.Transient;
 
-@Entity
+//@Entity
 public class Vehicle {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE)
-	@Column(name = "vehichle_id")
+	//	@Id
+	//	@GeneratedValue(strategy = GenerationType.SEQUENCE)
+	//	@Column(name = "vehichle_id")
+	@Transient
 	private int vehicleId;
 
 	@Column(name = "vehicle_name")
@@ -22,6 +20,7 @@ public class Vehicle {
 
 	//@JoinColumn(name="user_Id")
 
+	@Transient
 	public int getVehicleId() {
 		return vehicleId;
 	}

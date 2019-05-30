@@ -25,14 +25,16 @@
 
         <!-- Drop and re-create the database schema on startup -->
         <property name="hbm2ddl.auto">create</property> 
-        
+    
         <mapping class="com.greydev.messenger.message.comment.Comment" />
         <mapping class="com.greydev.messenger.message.Message" />
         <mapping class="com.greydev.messenger.profile.Profile" />
         <mapping class="com.greydev.messenger.link.Link" />
+        <mapping class="com.greydev.messenger.database.Vehicle" />
+        <!--   
+        -->
         <mapping class="com.greydev.messenger.database.User" />
         <mapping class="com.greydev.messenger.database.Address" />
-        <mapping class="com.greydev.messenger.database.Vehicle" />
 
     </session-factory>
 </hibernate-configuration>
