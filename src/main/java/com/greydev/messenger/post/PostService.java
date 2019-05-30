@@ -10,7 +10,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.greydev.messenger.database.DatabaseMock;
 import com.greydev.messenger.exception.DataNotFoundException;
 import com.greydev.messenger.exception.InvalidRequestDataException;
 import com.greydev.messenger.post.comment.CommentResource;
@@ -21,11 +20,11 @@ public class PostService {
 	private static final Logger LOG = LoggerFactory.getLogger(PostService.class);
 
 	public List<Post> getAllPosts() {
-		return DatabaseMock.getAllPostsAsListHibernate();
+		return PostDao.getAllPostsAsList();
 	}
 
 	public Post getPost(Long id) throws DataNotFoundException, UnknownHostException {
-		Post post = DatabaseMock.getPostHibernate(id);
+		Post post = PostDao.getPost(id);
 
 		if (post == null) {
 			throw new DataNotFoundException("GET", "/posts/" + id);
@@ -49,7 +48,7 @@ public class PostService {
 		//		newMessage.addLink(getUriForProfile(uriInfo, newMessage), "profile");
 		//		newMessage.addLink(getUriForComments(uriInfo, newMessage), "comments");
 
-		newPost.setId(DatabaseMock.addPostHibernate(newPost));
+		newPost.setId(PostDao.addPost(newPost));
 		return newPost;
 	}
 
@@ -67,13 +66,13 @@ public class PostService {
 		}
 
 		if (doesPostExist(post.getId())) {
-			DatabaseMock.updatePostHibernate(post);
+			PostDao.updatePost(post);
 			return post;
 		}
 		else {
 			System.out.println(" * * * post id: " + post.getId());
 			System.out.println(" * * * comment0 id: " + post.getComments().get(0).getId());
-			post.setId(DatabaseMock.addPostHibernate(post));
+			post.setId(PostDao.addPost(post));
 			System.out.println(" * * * post id: " + post.getId());
 			System.out.println(" * * * comment0 id: " + post.getComments().get(0).getId());
 			return post;
@@ -81,7 +80,7 @@ public class PostService {
 	}
 
 	public Post deletePost(Long id) throws DataNotFoundException {
-		Post response = DatabaseMock.deletePostHibernate(id);
+		Post response = PostDao.deletePost(id);
 
 		if (response == null) {
 			throw new DataNotFoundException("DELETE", "/posts/" + id);
@@ -96,11 +95,11 @@ public class PostService {
 			LOG.info("passed year parameter is not valid");
 			return null;
 		}
-		return DatabaseMock.getAllPostsForYear(year);
+		return PostDao.getAllPostsForYear(year);
 	}
 
 	public List<Post> getAllPostsPaginated(int start, int size) {
-		List<Post> postList = DatabaseMock.getAllPostsAsListHibernate();
+		List<Post> postList = PostDao.getAllPostsAsList();
 
 		if ((start + size) >= postList.size()) {
 			return postList.subList(start, postList.size());
@@ -127,7 +126,7 @@ public class PostService {
 	}
 
 	public boolean doesPostExist(Long id) {
-		return (DatabaseMock.getPostHibernate(id) != null);
+		return (PostDao.getPost(id) != null);
 	}
 
 }

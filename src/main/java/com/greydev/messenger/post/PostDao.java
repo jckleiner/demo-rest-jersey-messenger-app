@@ -1,27 +1,21 @@
-package com.greydev.messenger.database;
+package com.greydev.messenger.post;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
-import org.hibernate.cfg.Configuration;
 
-import com.greydev.messenger.post.Post;
+import com.greydev.messenger.database.SessionFactorySingleton;
 import com.greydev.messenger.post.comment.Comment;
-import com.greydev.messenger.profile.Profile;
+import com.greydev.messenger.post.comment.CommentDao;
 
-public class DatabaseMock {
+public class PostDao {
 
-	private static final Map<String, Profile> profileMap = new HashMap<>();
-	private static SessionFactory factory = new Configuration()
-			.configure("hibernate.cfg.xml")
-			.buildSessionFactory();
+	private static SessionFactory factory = SessionFactorySingleton.getSessionFactory();
 
 	// saving some dummy posts and profiles to the database
 	static {
@@ -35,12 +29,12 @@ public class DatabaseMock {
 		post2.getComments().add(new Comment("Sally", "Hey there", post2));
 		post2.getComments().add(new Comment("Sally2", "Hey there2", post2));
 
-		DatabaseMock.addPostHibernate(post1);
-		DatabaseMock.addPostHibernate(post2);
+		addPost(post1);
+		addPost(post2);
 
 	}
 
-	public static Long addPostHibernate(Post post) {
+	public static Long addPost(Post post) {
 		Long savedEntityId = null;
 		final Session session = factory.openSession();
 		Transaction transaction = null;
@@ -61,31 +55,13 @@ public class DatabaseMock {
 		return savedEntityId;
 	}
 
-	public static List<Comment> getComments(Post post) {
-		List<Comment> comments = null;
-		final Session session = factory.openSession();
-		Transaction transaction = null;
-		try {
-			transaction = session.beginTransaction();
-			comments = session.createQuery("from Comment where post.id=" + post.getId()).list();
-			transaction.commit();
-			session.close();
-		} catch (Exception e) {
-			if (transaction != null) {
-				transaction.rollback();
-			}
-			e.printStackTrace();
-		}
-		return comments;
-	}
-
-	public static Post updatePostHibernate(Post post) {
+	public static Post updatePost(Post post) {
 		final Session session = factory.openSession();
 		Transaction transaction = null;
 		try {
 			transaction = session.beginTransaction();
 			// first delete comments from the post object which will be updated
-			List<Comment> commentsToDelete = getComments(post);
+			List<Comment> commentsToDelete = CommentDao.getCommentsForPost(post);
 			commentsToDelete.forEach(comment -> {
 				System.out.println("Deleting comment ... " + comment.getAuthor());
 				session.delete(comment);
@@ -107,14 +83,14 @@ public class DatabaseMock {
 
 	}
 
-	public static Post deletePostHibernate(Long id) {
+	public static Post deletePost(Long id) {
 		Post postToDelete = null;
 		final Session session = factory.openSession();
 		Transaction transaction = null;
 		try {
 			transaction = session.beginTransaction();
 
-			postToDelete = getPostHibernate(id);
+			postToDelete = getPost(id);
 			if (postToDelete != null) {
 				session.delete(postToDelete);
 			}
@@ -130,7 +106,7 @@ public class DatabaseMock {
 		return postToDelete;
 	}
 
-	public static Post getPostHibernate(Long id) {
+	public static Post getPost(Long id) {
 		Post result = null;
 		final Session session = factory.openSession();
 		Transaction transaction = null;
@@ -152,7 +128,7 @@ public class DatabaseMock {
 
 	}
 
-	public static List<Post> getAllPostsAsListHibernate() {
+	public static List<Post> getAllPostsAsList() {
 		List<Post> results = null;
 		final Session session = factory.openSession();
 		Transaction transaction = null;
@@ -175,36 +151,12 @@ public class DatabaseMock {
 	public static List<Post> getAllPostsForYear(int year) {
 		List<Post> resultSet = new ArrayList<>();
 
-		for (Post post : getAllPostsAsListHibernate()) {
+		for (Post post : getAllPostsAsList()) {
 			if (post.getCreated().get(Calendar.YEAR) == year) {
 				resultSet.add(post);
 			}
 		}
 		return resultSet;
-	}
-
-	public static List<Profile> getAllProfiles() {
-		return new ArrayList<Profile>(profileMap.values());
-	}
-
-	public static Profile getProfile(String profileName) {
-		return profileMap.get(profileName);
-	}
-
-	public static void addProfile(String profileName, Profile profile) {
-		// limit capacity
-		if (getAllProfiles().size() >= 200) {
-			return;
-		}
-		profileMap.put(profileName, profile);
-	}
-
-	public static Profile deleteProfile(String profileName) {
-		return profileMap.remove(profileName);
-	}
-
-	public static Profile updateProfile(Profile profile) {
-		return profileMap.replace(profile.getProfileName(), profile);
 	}
 
 }

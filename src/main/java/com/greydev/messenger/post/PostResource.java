@@ -86,7 +86,7 @@ public class PostResource {
 		return postService.deletePost(postId);
 	}
 
-	// not giving a method parameter means: for all methods.
+	// no parameter means: for all methods.
 	@Path("{postId}/comments")
 	public CommentResource getCommentResource() {
 		LOG.info("getAllComments");
