@@ -2,7 +2,7 @@ package com.greydev.messenger.filter;
 
 import javax.ws.rs.QueryParam;
 
-public class MessageFilterBean {
+public class PostFilterBean {
 
 	private @QueryParam("year") int year;
 	private @QueryParam("start") int start;

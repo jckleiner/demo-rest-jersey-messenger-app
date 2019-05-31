@@ -6,7 +6,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.greydev.messenger.database.DatabaseMock;
 import com.greydev.messenger.exception.DataNotFoundException;
 import com.greydev.messenger.exception.InvalidRequestDataException;
 
@@ -15,15 +14,15 @@ public class ProfileService {
 	private static final Logger LOG = LoggerFactory.getLogger(ProfileService.class);
 
 	public List<Profile> getAllProfiles() {
-		return DatabaseMock.getAllProfiles();
+		return ProfileDao.getAllProfiles();
 	}
 
 	public Profile getProfile(String profileName) throws DataNotFoundException {
-		Profile newProfile = DatabaseMock.getProfile(profileName);
+		Profile newProfile = ProfileDao.getProfile(profileName);
 		if (newProfile == null) {
 			throw new DataNotFoundException("GET", "/profiles/" + profileName);
 		}
-		return DatabaseMock.getProfile(profileName);
+		return ProfileDao.getProfile(profileName);
 	}
 
 	// profileName is required
@@ -33,7 +32,7 @@ public class ProfileService {
 			throw new InvalidRequestDataException("POST", "/profiles");
 		}
 		Profile newProfile = new Profile(profile.getProfileName(), profile.getFirstName(), profile.getLastName());
-		DatabaseMock.addProfile(newProfile.getProfileName(), newProfile);
+		ProfileDao.addProfile(newProfile.getProfileName(), newProfile);
 		return newProfile;
 	}
 
@@ -49,12 +48,12 @@ public class ProfileService {
 			throw new DataNotFoundException("PUT", "/profiles/" + profile.getProfileName());
 		}
 		Profile newProfile = new Profile(profile.getProfileName(), profile.getFirstName(), profile.getLastName());
-		DatabaseMock.updateProfile(newProfile);
+		ProfileDao.updateProfile(newProfile);
 		return newProfile;
 	}
 
 	public Profile deleteProfile(String profileName) throws DataNotFoundException {
-		Profile response = DatabaseMock.deleteProfile(profileName);
+		Profile response = ProfileDao.deleteProfile(profileName);
 		if (response == null) {
 			throw new DataNotFoundException("DELETE", "/profiles/" + profileName);
 		}
@@ -68,7 +67,7 @@ public class ProfileService {
 	}
 
 	public boolean doesProfileNameExist(String profileName) {
-		return (DatabaseMock.getProfile(profileName) != null);
+		return (ProfileDao.getProfile(profileName) != null);
 	}
 
 }
