@@ -15,6 +15,9 @@ import javax.ws.rs.core.MediaType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.greydev.messenger.exception.DataNotFoundException;
+import com.greydev.messenger.exception.InvalidRequestDataException;
+
 @Path("/")
 @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
@@ -25,26 +28,28 @@ public class CommentResource {
 	private CommentService commentService = new CommentService();
 
 	@GET
-	public List<Comment> getAllComments(@PathParam("postId") Long postId) {
-		LOG.info("getAllComments");
-		return commentService.getAllComments(postId);
+	public List<Comment> getCommentsForPost(@PathParam("postId") Long postId) {
+		LOG.info("getCommentsForPost");
+		return commentService.getCommentsForPost(postId);
 	}
 
 	@GET
 	@Path("{commentId}")
+	//TODO post id is unused?
 	public Comment getComment(@PathParam("postId") Long postId, @PathParam("commentId") Long commentId) {
 		return commentService.getComment(postId, commentId);
 	}
 
 	@POST
-	public Comment addComment(@PathParam("postId") Long postId, Comment comment) {
+	public Comment addComment(@PathParam("postId") Long postId, Comment comment)
+			throws InvalidRequestDataException, DataNotFoundException {
 		return commentService.addComment(postId, comment);
 	}
 
 	@PUT
 	@Path("{commentId}")
 	public Comment updateComment(@PathParam("postId") Long postId, @PathParam("commentId") Long commentId,
-			Comment comment) {
+			Comment comment) throws DataNotFoundException, InvalidRequestDataException {
 		comment.setId(commentId);
 		return commentService.updateComment(postId, comment);
 	}

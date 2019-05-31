@@ -34,6 +34,28 @@ public class PostDao {
 
 	}
 
+	public static Post getPost(Long id) {
+		Post result = null;
+		final Session session = factory.openSession();
+		Transaction transaction = null;
+		try {
+			transaction = session.beginTransaction();
+
+			result = session.get(Post.class, id);
+
+			transaction.commit();
+			session.close();
+
+		} catch (Exception e) {
+			if (transaction != null) {
+				transaction.rollback();
+			}
+			e.printStackTrace();
+		}
+		return result;
+
+	}
+
 	public static Long addPost(Post post) {
 		Long savedEntityId = null;
 		final Session session = factory.openSession();
@@ -61,7 +83,7 @@ public class PostDao {
 		try {
 			transaction = session.beginTransaction();
 			// first delete comments from the post object which will be updated
-			List<Comment> commentsToDelete = CommentDao.getCommentsForPost(post);
+			List<Comment> commentsToDelete = CommentDao.getCommentsForPost(post.getId());
 			commentsToDelete.forEach(comment -> {
 				System.out.println("Deleting comment ... " + comment.getAuthor());
 				session.delete(comment);
@@ -104,28 +126,6 @@ public class PostDao {
 			e.printStackTrace();
 		}
 		return postToDelete;
-	}
-
-	public static Post getPost(Long id) {
-		Post result = null;
-		final Session session = factory.openSession();
-		Transaction transaction = null;
-		try {
-			transaction = session.beginTransaction();
-
-			result = session.get(Post.class, id);
-
-			transaction.commit();
-			session.close();
-
-		} catch (Exception e) {
-			if (transaction != null) {
-				transaction.rollback();
-			}
-			e.printStackTrace();
-		}
-		return result;
-
 	}
 
 	public static List<Post> getAllPostsAsList() {
