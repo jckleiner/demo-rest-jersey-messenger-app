@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory;
 import com.greydev.messenger.exception.DataNotFoundException;
 import com.greydev.messenger.exception.InvalidRequestDataException;
 
+// TODO how to expose comment resource also under .../comments and not just .../messages/x/comments?
 @Path("/")
 @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
