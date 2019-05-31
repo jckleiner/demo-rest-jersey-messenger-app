@@ -1,56 +1,78 @@
 package com.greydev.messenger.post.comment;
 
 import java.util.GregorianCalendar;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import com.greydev.messenger.post.Post;
+import org.apache.commons.lang3.StringUtils;
+
+import com.greydev.messenger.exception.DataNotFoundException;
+import com.greydev.messenger.exception.InvalidRequestDataException;
+import com.greydev.messenger.post.PostDao;
 
 //TODO add error handling
 public class CommentService {
 
-	private Map<Long, Post> messageMap = new HashMap<>();
-	private static long idCount = 10;
+	// TODO get ALL comments
 
-	public List<Comment> getAllComments(Long messageId) {
-		//		Map<Long, Comment> comments = messageMap.get(messageId).getComments();
-		//		List<Comment> resultCommentList = new ArrayList<>(comments.values());
-		//		return resultCommentList;
-		return null;
+	public List<Comment> getCommentsForPost(Long postId) {
+		List<Comment> results = CommentDao.getCommentsForPost(postId);
+		return results;
 	}
 
 	public Comment getComment(Long messageId, Long commentId) {
-		//		return messageMap.get(messageId).getComments().get(commentId);
-		return null;
+		return CommentDao.getComment(commentId);
 	}
 
-	public Comment addComment(Long messageId, Comment comment) {
-		comment.setId(getNextId());
-		comment.setCreated(new GregorianCalendar());
-		// limit capacity
-		if (messageMap.size() >= 200) {
-			return null;
+	public Comment addComment(Long postId, Comment comment) throws InvalidRequestDataException, DataNotFoundException {
+		if (!isCommentValid(comment)) {
+			throw new InvalidRequestDataException("POST", "/comments");
 		}
-		//		messageMap.get(messageId).getComments().put(comment.getId(), comment);
+		if (!doesPostExist(postId)) {
+			throw new DataNotFoundException("POST", "/posts/" + postId);
+		}
+		comment.setId(null);
+		comment.setCreated(new GregorianCalendar());
+		CommentDao.addCommentToPost(postId, comment);
 		return comment;
 	}
 
-	public Comment updateComment(Long messageId, Comment comment) {
-		comment.setCreated(new GregorianCalendar());
-		//		Map<Long, Comment> allComments = messageMap.get(messageId).getComments();
-		//		allComments.put(comment.getId(), comment);
-		//		return comment;
-		return null;
+	public Comment updateComment(Long postId, Comment comment) throws DataNotFoundException, InvalidRequestDataException {
+
+		if (!isCommentValid(comment)) {
+			throw new InvalidRequestDataException("PUT", "/comments");
+		}
+		System.out.println("POST ID: " + postId);
+		System.out.println(doesPostExist(postId));
+		if (!doesPostExist(postId)) {
+			throw new DataNotFoundException("PUT", "/posts/" + postId);
+		}
+		/* if there is no comment with the given id, add a new comment with that id
+		 * We use a custom id generator, so if the Entity has already an id set,
+		 * it will use that when saving it to the DB. If it's null then a new one is generated.
+		 */
+		// TODO throw exception from DB or check here for null???
+		if (!doesCommentExist(comment.getId())) {
+			CommentDao.addCommentToPost(postId, comment);
+			return comment;
+		}
+		return CommentDao.updateComment(postId, comment);
 	}
 
 	public Comment deleteComment(Long messageId, Long commentId) {
-		//		Map<Long, Comment> allComments = messageMap.get(messageId).getComments();
-		//		return allComments.remove(commentId);
-		return null;
+		return CommentDao.deleteComment(commentId);
 	}
 
-	private static long getNextId() {
-		return idCount++;
+	// mandatory properties: Author, Text
+	public boolean isCommentValid(Comment comment) {
+		return StringUtils.isNoneBlank(comment.getAuthor(), comment.getText());
 	}
+
+	public boolean doesCommentExist(Long id) {
+		return (CommentDao.getComment(id) != null);
+	}
+
+	public boolean doesPostExist(Long id) {
+		return (PostDao.getPost(id) != null);
+	}
+
 }
