@@ -50,13 +50,13 @@ public class CommentResource {
 	@Path("{commentId}")
 	public Comment updateComment(@PathParam("postId") Long postId, @PathParam("commentId") Long commentId,
 			Comment comment) throws DataNotFoundException, InvalidRequestDataException {
-		comment.setId(commentId);
-		return commentService.updateComment(postId, comment);
+		return commentService.updateComment(postId, commentId, comment);
 	}
 
 	@DELETE
 	@Path("{commentId}")
-	public Comment deleteComment(@PathParam("postId") Long postId, @PathParam("commentId") Long commentId) {
+	public Comment deleteComment(@PathParam("postId") Long postId, @PathParam("commentId") Long commentId)
+			throws DataNotFoundException {
 		return commentService.deleteComment(postId, commentId);
 	}
 

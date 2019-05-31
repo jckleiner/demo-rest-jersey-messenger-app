@@ -9,26 +9,27 @@ import com.greydev.messenger.exception.DataNotFoundException;
 import com.greydev.messenger.exception.InvalidRequestDataException;
 import com.greydev.messenger.post.PostDao;
 
-//TODO add error handling
+// TODO writing URI's manually inside exceptions seems bad, fix
 public class CommentService {
 
-	// TODO get ALL comments
-
-	public List<Comment> getCommentsForPost(Long postId) {
-		List<Comment> results = CommentDao.getCommentsForPost(postId);
-		return results;
+	public List<Comment> getAllCommentsForEveryPost() {
+		return CommentDao.getAllCommentsForEveryPost();
 	}
 
-	public Comment getComment(Long messageId, Long commentId) {
+	public List<Comment> getCommentsForPost(Long postId) {
+		return CommentDao.getCommentsForPost(postId);
+	}
+
+	public Comment getComment(Long postId, Long commentId) {
 		return CommentDao.getComment(commentId);
 	}
 
 	public Comment addComment(Long postId, Comment comment) throws InvalidRequestDataException, DataNotFoundException {
 		if (!isCommentValid(comment)) {
-			throw new InvalidRequestDataException("POST", "/comments");
+			throw new InvalidRequestDataException("POST", "/posts/" + postId + "/comments/");
 		}
 		if (!doesPostExist(postId)) {
-			throw new DataNotFoundException("POST", "/posts/" + postId);
+			throw new DataNotFoundException("POST", "/posts/" + postId + "/comments/");
 		}
 		comment.setId(null);
 		comment.setCreated(new GregorianCalendar());
@@ -36,10 +37,12 @@ public class CommentService {
 		return comment;
 	}
 
-	public Comment updateComment(Long postId, Comment comment) throws DataNotFoundException, InvalidRequestDataException {
+	public Comment updateComment(Long postId, Long commentId, Comment comment)
+			throws DataNotFoundException, InvalidRequestDataException {
 
+		comment.setId(commentId); // use the given comment id from the URL
 		if (!isCommentValid(comment)) {
-			throw new InvalidRequestDataException("PUT", "/comments");
+			throw new InvalidRequestDataException("PUT", "/posts/" + postId + "/comments/" + commentId);
 		}
 		System.out.println("POST ID: " + postId);
 		System.out.println(doesPostExist(postId));
@@ -58,8 +61,12 @@ public class CommentService {
 		return CommentDao.updateComment(postId, comment);
 	}
 
-	public Comment deleteComment(Long messageId, Long commentId) {
-		return CommentDao.deleteComment(commentId);
+	public Comment deleteComment(Long postId, Long commentId) throws DataNotFoundException {
+		Comment deletedComment = CommentDao.deleteComment(commentId);
+		if (deletedComment == null) {
+			throw new DataNotFoundException("DELETE", "posts/" + postId + "/comments/" + commentId);
+		}
+		return deletedComment;
 	}
 
 	// mandatory properties: Author, Text

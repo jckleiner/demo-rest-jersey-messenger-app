@@ -35,6 +35,24 @@ public class CommentDao {
 		return result;
 	}
 
+	public static List<Comment> getAllCommentsForEveryPost() {
+		List<Comment> comments = null;
+		final Session session = factory.openSession();
+		Transaction transaction = null;
+		try {
+			transaction = session.beginTransaction();
+			comments = session.createQuery("from Comment").list();
+			transaction.commit();
+			session.close();
+		} catch (Exception e) {
+			if (transaction != null) {
+				transaction.rollback();
+			}
+			e.printStackTrace();
+		}
+		return comments;
+	}
+
 	public static List<Comment> getCommentsForPost(Long postId) {
 		List<Comment> comments = null;
 		final Session session = factory.openSession();
@@ -109,25 +127,11 @@ public class CommentDao {
 		try {
 			transaction = session.beginTransaction();
 
-			// TODO can we set a new parent???
-			//			session.update(comment);
-
-			Post parentPost = session.get(Post.class, postId);
 			// DON'T FORGET to handle the bi-directional relationship!
-			newComment.setPost(parentPost);
-
-			List<Comment> comments = parentPost.getComments();
-			// delete old comment from the list
-			comments.forEach(comm -> {
-				if (comm.getId() == newComment.getId()) {
-					comments.remove(comm);
-					comments.add(newComment);
-				}
-			});
-
-			// TODO successfully update an existing comment.
-
-			// A different object with the same identifier value was already associated with the session : [com.greydev.messenger.post.comment.Comment#55]
+			Post parentPost = session.get(Post.class, postId);
+			newComment.setPost(parentPost); // without this, FK 'post.id' will be null
+			session.clear(); // throws an exception without this line
+			session.update(newComment); // finds the old comment from the id and replaces it
 
 			transaction.commit();
 			session.close();
@@ -150,6 +154,14 @@ public class CommentDao {
 		try {
 			transaction = session.beginTransaction();
 
+			// TODO how to handle this properly?
+			commentToDelete = getComment(id);
+			if (commentToDelete != null) {
+				// removes the comment both from the commentList inside Post
+				// a
+				session.delete(commentToDelete);
+			}
+
 			transaction.commit();
 			session.close();
 		} catch (Exception e) {
@@ -157,6 +169,7 @@ public class CommentDao {
 				transaction.rollback();
 			}
 			e.printStackTrace();
+			commentToDelete = null;
 		}
 		return commentToDelete;
 	}
