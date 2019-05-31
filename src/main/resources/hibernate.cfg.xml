@@ -15,7 +15,7 @@
         <property name="connection.pool_size">5</property>
 
         <!-- SQL dialect -->
-        <property name="dialect">org.hibernate.dialect.MySQL5Dialect</property>
+        <property name="dialect">org.hibernate.dialect.MySQL5InnoDBDialect</property>
 
         <!-- Enable Hibernate's automatic session context management -->
         <property name="current_session_context_class">thread</property>
@@ -30,11 +30,6 @@
         <mapping class="com.greydev.messenger.post.Post" />
         <mapping class="com.greydev.messenger.profile.Profile" />
         <mapping class="com.greydev.messenger.link.Link" />
-        <mapping class="com.greydev.messenger.test.Vehicle" />
-        <!--   
-        -->
-        <mapping class="com.greydev.messenger.test.User" />
-        <mapping class="com.greydev.messenger.test.Address" />
 
     </session-factory>
 </hibernate-configuration>

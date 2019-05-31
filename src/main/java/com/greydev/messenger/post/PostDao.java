@@ -12,6 +12,8 @@ import org.hibernate.Transaction;
 import com.greydev.messenger.SessionFactorySingleton;
 import com.greydev.messenger.post.comment.Comment;
 import com.greydev.messenger.post.comment.CommentDao;
+import com.greydev.messenger.profile.Profile;
+import com.greydev.messenger.profile.ProfileDao;
 
 public class PostDao {
 
@@ -19,6 +21,8 @@ public class PostDao {
 
 	// saving some dummy posts and profiles to the database
 	static {
+
+		Profile profile1 = new Profile("Such profile", "pol", "pia");
 
 		Post post1 = new Post("can", "Such a lovely weather today!", new GregorianCalendar(2015, 11, 11));
 		Post post2 = new Post("jason", "I own a grocery store!", new GregorianCalendar(2011, 04, 04));
@@ -31,6 +35,8 @@ public class PostDao {
 
 		addPost(post1);
 		addPost(post2);
+
+		ProfileDao.addProfile(profile1);
 
 	}
 

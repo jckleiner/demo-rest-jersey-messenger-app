@@ -1,25 +1,37 @@
 package com.greydev.messenger.profile;
 
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.xml.bind.annotation.XmlRootElement;
+
+import com.greydev.messenger.post.Post;
 
 @Entity
 @XmlRootElement
 public class Profile {
 
 	@Id
-	@Column(name = "profileName")
+	@Column(name = "profile_name")
 	private String profileName;
-	@Column(name = "firstName")
+	@Column(name = "first_name")
 	private String firstName;
-	@Column(name = "lastName")
+	@Column(name = "last_name")
 	private String lastName;
 	@Column(name = "created")
 	private Date created;
+	@Column(name = "created")
+	//	@LazyCollection(LazyCollectionOption.FALSE)
+
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	private Set<Post> posts = new HashSet<>();
 
 	public Profile() {
 
@@ -69,8 +81,8 @@ public class Profile {
 		return created;
 	}
 
-	public void setCreated(Date date) {
-		created = date;
+	public void setCreated(Date created) {
+		this.created = created;
 	}
 
 }

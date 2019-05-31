@@ -4,19 +4,23 @@ import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 import org.hibernate.annotations.GenericGenerator;
 
 import com.greydev.messenger.link.Link;
 import com.greydev.messenger.post.comment.Comment;
+import com.greydev.messenger.profile.Profile;
 
 @Entity
 @XmlRootElement
@@ -32,10 +36,12 @@ public class Post {
 	private String text;
 	@Column(name = "author")
 	private String author;
-	@OneToMany(cascade = javax.persistence.CascadeType.ALL, fetch = FetchType.EAGER)
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "post")
 	private List<Comment> comments = new ArrayList<>();
 	@Transient
 	private List<Link> links = new ArrayList<>();
+	@ManyToOne
+	private Profile profile;
 
 	public Post() {
 	}
@@ -99,6 +105,15 @@ public class Post {
 	//	@XmlTransient
 	public List<Link> getLinks() {
 		return links;
+	}
+
+	@XmlTransient
+	public Profile getProfile() {
+		return profile;
+	}
+
+	public void setProfile(Profile profile) {
+		this.profile = profile;
 	}
 
 	public void setLinks(List<Link> links) {

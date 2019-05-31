@@ -32,7 +32,7 @@ public class ProfileService {
 			throw new InvalidRequestDataException("POST", "/profiles");
 		}
 		Profile newProfile = new Profile(profile.getProfileName(), profile.getFirstName(), profile.getLastName());
-		ProfileDao.addProfile(newProfile.getProfileName(), newProfile);
+		//		ProfileDao.addProfile(newProfile.getProfileName(), newProfile);
 		return newProfile;
 	}
 
