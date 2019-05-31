@@ -112,6 +112,7 @@ public class PostDao {
 		try {
 			transaction = session.beginTransaction();
 
+			// TODO how to handle this properly?
 			postToDelete = getPost(id);
 			if (postToDelete != null) {
 				session.delete(postToDelete);

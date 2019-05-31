@@ -15,6 +15,7 @@ import com.greydev.messenger.exception.InvalidRequestDataException;
 import com.greydev.messenger.post.comment.CommentResource;
 import com.greydev.messenger.profile.ProfileResource;
 
+//TODO writing URI's manually inside exceptions seems bad, fix
 public class PostService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(PostService.class);
