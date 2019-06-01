@@ -36,6 +36,12 @@ public class PostDao {
 		addPost(post1);
 		addPost(post2);
 
+		// set bi-directional relationships
+		profile1.getPosts().add(post1);
+		profile1.getPosts().add(post2);
+		post1.setProfile(profile1);
+		post2.setProfile(profile1);
+
 		ProfileDao.addProfile(profile1);
 
 	}

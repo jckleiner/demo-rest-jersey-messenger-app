@@ -27,10 +27,12 @@ public class Profile {
 	private String lastName;
 	@Column(name = "created")
 	private Date created;
+
+	// TODO handle bi-directional relations properly
 	@Column(name = "created")
 	//	@LazyCollection(LazyCollectionOption.FALSE)
-
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	// 
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "profile")
 	private Set<Post> posts = new HashSet<>();
 
 	public Profile() {
@@ -83,6 +85,14 @@ public class Profile {
 
 	public void setCreated(Date created) {
 		this.created = created;
+	}
+
+	public Set<Post> getPosts() {
+		return posts;
+	}
+
+	public void setPosts(Set<Post> posts) {
+		this.posts = posts;
 	}
 
 }
