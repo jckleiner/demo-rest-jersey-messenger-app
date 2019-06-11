@@ -1,6 +1,6 @@
 package com.greydev.messenger.profile;
 
-import java.util.ArrayList;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,18 +10,83 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 
 import com.greydev.messenger.SessionFactorySingleton;
+import com.greydev.messenger.post.Post;
+import com.greydev.messenger.post.PostDao;
+import com.greydev.messenger.post.comment.Comment;
 
 public class ProfileDao {
 
 	private static SessionFactory factory = SessionFactorySingleton.getSessionFactory();
 	private static final Map<String, Profile> profileMap = new HashMap<>();
 
+	//saving some dummy posts and profiles to the database
+	static {
+
+		Profile profile1 = new Profile("Such profile", "pol", "pia");
+
+		Post post1 = new Post("can", "Such a lovely weather today!", new GregorianCalendar(2015, 11, 11));
+		Post post2 = new Post("jason", "I own a grocery store!", new GregorianCalendar(2011, 04, 04));
+
+		post1.getComments().add(new Comment("Johny", "First Comment", post1));
+		post1.getComments().add(new Comment("Emily", "Grocery store", post1));
+
+		post2.getComments().add(new Comment("Sally", "Hey there", post2));
+		post2.getComments().add(new Comment("Sally2", "Hey there2", post2));
+
+		PostDao.addPost(post1);
+		PostDao.addPost(post2);
+
+		// set bi-directional relationships
+		profile1.getPosts().add(post1);
+		profile1.getPosts().add(post2);
+		post1.setProfile(profile1);
+		post2.setProfile(profile1);
+
+		ProfileDao.addProfile(profile1);
+
+	}
+
 	public static List<Profile> getAllProfiles() {
-		return new ArrayList<Profile>(profileMap.values());
+		List<Profile> results = null;
+		final Session session = factory.openSession();
+		Transaction transaction = null;
+		try {
+			transaction = session.beginTransaction();
+
+			results = session.createQuery("from Profile").list();
+
+			transaction.commit();
+			session.close();
+		} catch (Exception e) {
+			if (transaction != null) {
+				transaction.rollback();
+			}
+			e.printStackTrace();
+			results = null;
+		}
+		return results;
+
 	}
 
 	public static Profile getProfile(String profileName) {
-		return profileMap.get(profileName);
+		Profile profile = null;
+		final Session session = factory.openSession();
+		Transaction transaction = null;
+		try {
+			transaction = session.beginTransaction();
+
+			session.get(Profile.class, profileName);
+
+			transaction.commit();
+			session.close();
+		} catch (Exception e) {
+			if (transaction != null) {
+				transaction.rollback();
+			}
+			e.printStackTrace();
+			profile = null;
+		}
+		return profile;
 	}
 
 	public static void addProfile(Profile profile) {
@@ -30,6 +95,7 @@ public class ProfileDao {
 		try {
 			transaction = session.beginTransaction();
 
+			// TODO handle child entities
 			session.save(profile);
 
 			transaction.commit();
@@ -44,11 +110,52 @@ public class ProfileDao {
 	}
 
 	public static Profile deleteProfile(String profileName) {
-		return profileMap.remove(profileName);
+		Profile profileToDelete = null;
+		final Session session = factory.openSession();
+		Transaction transaction = null;
+		try {
+			transaction = session.beginTransaction();
+
+			// TODO handle child entities
+			// TODO how to handle this properly?
+			profileToDelete = getProfile(profileName);
+			if (profileToDelete != null) {
+				session.delete(profileToDelete);
+			}
+
+			transaction.commit();
+			session.close();
+		} catch (Exception e) {
+			if (transaction != null) {
+				transaction.rollback();
+			}
+			e.printStackTrace();
+			profileToDelete = null;
+		}
+		return profileToDelete;
 	}
 
 	public static Profile updateProfile(Profile profile) {
-		return profileMap.replace(profile.getProfileName(), profile);
+
+		final Session session = factory.openSession();
+		Transaction transaction = null;
+		try {
+			transaction = session.beginTransaction();
+
+			// TODO handle child entities
+			session.save(profile);
+
+			transaction.commit();
+			session.close();
+		} catch (Exception e) {
+			if (transaction != null) {
+				transaction.rollback();
+			}
+			e.printStackTrace();
+
+		}
+		return null;
+
 	}
 
 }

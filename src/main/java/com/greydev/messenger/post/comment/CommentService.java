@@ -13,15 +13,23 @@ import com.greydev.messenger.post.PostDao;
 public class CommentService {
 
 	public List<Comment> getAllCommentsForEveryPost() {
-		return CommentDao.getAllCommentsForEveryPost();
+		List<Comment> comments = CommentDao.getAllCommentsForEveryPost();
+		return comments;
 	}
 
 	public List<Comment> getCommentsForPost(Long postId) {
-		return CommentDao.getCommentsForPost(postId);
+		List<Comment> comments = CommentDao.getCommentsForPost(postId);
+		return comments;
 	}
 
 	public Comment getComment(Long postId, Long commentId) {
-		return CommentDao.getComment(commentId);
+		Comment comment = CommentDao.getComment(commentId);
+		return comment;
+	}
+
+	public Comment getComment(Long commentId) {
+		Comment comment = CommentDao.getComment(commentId);
+		return comment;
 	}
 
 	public Comment addComment(Long postId, Comment comment) throws InvalidRequestDataException, DataNotFoundException {
@@ -35,6 +43,13 @@ public class CommentService {
 		comment.setCreated(new GregorianCalendar());
 		CommentDao.addCommentToPost(postId, comment);
 		return comment;
+	}
+
+	// TODO 
+	public Comment addCommentNewEndpoint(Comment comment) throws InvalidRequestDataException, DataNotFoundException {
+		Long postId = comment.getParentPostId();
+		return addComment(postId, comment);
+
 	}
 
 	public Comment updateComment(Long postId, Long commentId, Comment comment)
@@ -58,7 +73,8 @@ public class CommentService {
 			CommentDao.addCommentToPost(postId, comment);
 			return comment;
 		}
-		return CommentDao.updateComment(postId, comment);
+		comment = CommentDao.updateComment(postId, comment);
+		return comment;
 	}
 
 	public Comment deleteComment(Long postId, Long commentId) throws DataNotFoundException {

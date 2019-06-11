@@ -6,7 +6,7 @@ import java.util.List;
 
 import javax.ws.rs.core.UriInfo;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.ObjectUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,23 +34,23 @@ public class PostService {
 	}
 
 	public Post addPost(UriInfo uriInfo, Post post) throws InvalidRequestDataException {
-		Post newPost = new Post(post.getAuthor(), post.getText());
-		newPost.setComments(post.getComments());
-		newPost.getComments().forEach(comment -> {
+
+		post.setId(null); // don't use the id given by the user, let hibernate generate a new one by setting it to null
+		post.getComments().forEach(comment -> {
 			System.out.println("setting parent post inside comment...");
-			comment.setPost(newPost);
-			comment.setId(null);
+			comment.setPost(post); // set the parent relationship
+			comment.setId(null); // don't use the id given by the user
 		});
 
-		if (!isPostValid(newPost)) {
+		if (!isPostValid(post)) {
 			throw new InvalidRequestDataException("POST", "/posts");
 		}
 		//		newMessage.addLink(getUriForSelf(uriInfo, newMessage), "self");
 		//		newMessage.addLink(getUriForProfile(uriInfo, newMessage), "profile");
 		//		newMessage.addLink(getUriForComments(uriInfo, newMessage), "comments");
 
-		newPost.setId(PostDao.addPost(newPost));
-		return newPost;
+		post.setId(PostDao.addPost(post));
+		return post;
 	}
 
 	public Post updatePost(Long queryParamPostId, Post post) throws InvalidRequestDataException {
@@ -123,7 +123,7 @@ public class PostService {
 
 	// mandatory properties: Author, Text
 	public boolean isPostValid(Post post) {
-		return StringUtils.isNoneBlank(post.getAuthor(), post.getText());
+		return ObjectUtils.allNotNull(post.getAuthor(), post.getText(), post.getProfile());
 	}
 
 	public boolean doesPostExist(Long id) {

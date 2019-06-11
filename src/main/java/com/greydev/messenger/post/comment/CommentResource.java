@@ -10,7 +10,9 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.UriInfo;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,7 +21,7 @@ import com.greydev.messenger.exception.DataNotFoundException;
 import com.greydev.messenger.exception.InvalidRequestDataException;
 
 // TODO how to expose comment resource also under .../comments and not just .../messages/x/comments?
-@Path("/")
+@Path("/comments") // this path is ignored if parent calles this resource with a different url
 @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 public class CommentResource {
@@ -29,35 +31,67 @@ public class CommentResource {
 	private CommentService commentService = new CommentService();
 
 	@GET
-	public List<Comment> getCommentsForPost(@PathParam("postId") Long postId) {
-		LOG.info("getCommentsForPost");
-		return commentService.getCommentsForPost(postId);
+	public List<Comment> getComments(@PathParam("postId") Long postId, @Context UriInfo uriInfo) {
+		LOG.info("getCommentsForPost - postId: {}", postId);
+		LOG.info("@GET - path: {}", uriInfo.getAbsolutePath());
+
+		// when .../api/comments is called, Client wants to get all the comments.
+		if (postId == null) { // @GET - path: http://localhost:8080/messenger/api/comments
+			LOG.info(" *** DIRECT ACCESS TO ALL COMMENTS *** ");
+			return commentService.getAllCommentsForEveryPost();
+		}
+		return commentService.getCommentsForPost(postId); // @GET - path: http://localhost:8080/messenger/api/posts/1/comments
 	}
 
 	@GET
 	@Path("{commentId}")
-	//TODO post id is unused?
 	public Comment getComment(@PathParam("postId") Long postId, @PathParam("commentId") Long commentId) {
-		return commentService.getComment(postId, commentId);
+
+		if (postId == null) { // @GET - path: http://localhost:8080/messenger/api/comments/4
+			LOG.info(" *** DIRECT ACCESS TO ONE COMMENT *** ");
+			return commentService.getComment(commentId);
+		}
+		return commentService.getComment(postId, commentId); // @GET - path: http://localhost:8080/messenger/api/posts/2/comments/4
 	}
 
 	@POST
 	public Comment addComment(@PathParam("postId") Long postId, Comment comment)
 			throws InvalidRequestDataException, DataNotFoundException {
-		return commentService.addComment(postId, comment);
+
+		if (postId == null) { // @POST - path: http://localhost:8080/messenger/api/comments
+			LOG.info(" *** DIRECT POST TO COMMENTS *** ");
+			postId = comment.getParentPostId();
+			LOG.info(" *** POST ID : {} *** ", postId);
+			return commentService.addComment(postId, comment);
+		}
+		return commentService.addComment(postId, comment); // @POST - path: http://localhost:8080/messenger/api/posts/2/comments
 	}
 
 	@PUT
 	@Path("{commentId}")
 	public Comment updateComment(@PathParam("postId") Long postId, @PathParam("commentId") Long commentId,
 			Comment comment) throws DataNotFoundException, InvalidRequestDataException {
+
+		if (postId == null) {
+			LOG.info(" *** DIRECT POST TO COMMENTS *** ");
+			postId = comment.getParentPostId();
+			return commentService.updateComment(postId, commentId, comment);
+		}
+
 		return commentService.updateComment(postId, commentId, comment);
 	}
 
 	@DELETE
 	@Path("{commentId}")
-	public Comment deleteComment(@PathParam("postId") Long postId, @PathParam("commentId") Long commentId)
+	public Comment deleteComment(@PathParam("postId") Long postId, @PathParam("commentId") Long commentId, Comment comment)
 			throws DataNotFoundException {
+
+		if (postId == null) {
+			LOG.info(" *** DIRECT POST TO COMMENTS *** ");
+			postId = comment.getParentPostId();
+			return commentService.deleteComment(postId, commentId);
+		}
+
 		return commentService.deleteComment(postId, commentId);
 	}
 
