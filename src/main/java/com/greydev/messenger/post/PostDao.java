@@ -2,7 +2,6 @@ package com.greydev.messenger.post;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.List;
 
 import org.hibernate.Session;
@@ -12,39 +11,10 @@ import org.hibernate.Transaction;
 import com.greydev.messenger.SessionFactorySingleton;
 import com.greydev.messenger.post.comment.Comment;
 import com.greydev.messenger.post.comment.CommentDao;
-import com.greydev.messenger.profile.Profile;
-import com.greydev.messenger.profile.ProfileDao;
 
 public class PostDao {
 
 	private static SessionFactory factory = SessionFactorySingleton.getSessionFactory();
-
-	// saving some dummy posts and profiles to the database
-	static {
-
-		Profile profile1 = new Profile("Such profile", "pol", "pia");
-
-		Post post1 = new Post("can", "Such a lovely weather today!", new GregorianCalendar(2015, 11, 11));
-		Post post2 = new Post("jason", "I own a grocery store!", new GregorianCalendar(2011, 04, 04));
-
-		post1.getComments().add(new Comment("Johny", "First Comment", post1));
-		post1.getComments().add(new Comment("Emily", "Grocery store", post1));
-
-		post2.getComments().add(new Comment("Sally", "Hey there", post2));
-		post2.getComments().add(new Comment("Sally2", "Hey there2", post2));
-
-		addPost(post1);
-		addPost(post2);
-
-		// set bi-directional relationships
-		profile1.getPosts().add(post1);
-		profile1.getPosts().add(post2);
-		post1.setProfile(profile1);
-		post2.setProfile(profile1);
-
-		ProfileDao.addProfile(profile1);
-
-	}
 
 	public static Post getPost(Long id) {
 		Post result = null;

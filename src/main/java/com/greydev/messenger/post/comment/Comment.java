@@ -7,6 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlTransient;
 
 import org.hibernate.annotations.GenericGenerator;
@@ -29,8 +30,31 @@ public class Comment {
 	private String author;
 	@ManyToOne
 	private Post post;
+	@Transient
+	private Long parentPostId;
 
 	public Comment() {
+	}
+
+	public Comment(String author, String text, Post post) {
+		super();
+		this.created = new GregorianCalendar();
+		this.text = text;
+		this.author = author;
+		this.post = post;
+		this.parentPostId = post.getId();
+	}
+
+	public Long getParentPostId() {
+		System.out.println("trying to access parent post id...");
+		if (post != null) { // is not set when we receive a request with a comment body
+			return post.getId();
+		}
+		return parentPostId;
+	}
+
+	public void setParentPostId(Long parentPostId) {
+		this.parentPostId = parentPostId;
 	}
 
 	@XmlTransient
@@ -40,38 +64,7 @@ public class Comment {
 
 	public void setPost(Post post) {
 		this.post = post;
-	}
-
-	public Comment(String author, String text) {
-		super();
-		this.created = new GregorianCalendar();
-		this.text = text;
-		this.author = author;
-	}
-
-	public Comment(String author, String text, Post post) {
-		super();
-		this.created = new GregorianCalendar();
-		this.text = text;
-		this.author = author;
-		this.post = post;
-	}
-
-	public Comment(Long id, String author, String text, Post post) {
-		super();
-		this.created = new GregorianCalendar();
-		this.text = text;
-		this.author = author;
-		this.id = id;
-		this.post = post;
-	}
-
-	public Comment(Long id, String author, String text) {
-		super();
-		this.created = new GregorianCalendar();
-		this.id = id;
-		this.text = text;
-		this.author = author;
+		this.parentPostId = post.getId();
 	}
 
 	public GregorianCalendar getCreated() {
