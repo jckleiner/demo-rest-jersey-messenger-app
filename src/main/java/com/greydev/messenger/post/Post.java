@@ -42,6 +42,20 @@ public class Post {
 	private List<Link> links = new ArrayList<>();
 	@ManyToOne
 	private Profile profile;
+	@Transient
+	private String parentProfileName;
+
+	public String getParentProfileName() {
+		if (this.profile != null) { // is not set when we receive a request with a comment body as a payload
+			return this.profile.getProfileName();
+		}
+		System.out.println("parentProfile is null inside Post...");
+		return parentProfileName;
+	}
+
+	public void setParentProfileName(String parentProfileName) {
+		this.parentProfileName = parentProfileName;
+	}
 
 	public Post() {
 	}
@@ -54,16 +68,11 @@ public class Post {
 		this.comments = comments;
 	}
 
-	public Post(String author, String text, GregorianCalendar date) {
+	public Post(String author, String text, GregorianCalendar date, Profile profile) {
 		this.author = author;
 		this.text = text;
 		this.created = date;
-	}
-
-	public Post(String author, String text) {
-		this.author = author;
-		this.text = text;
-		this.created = new GregorianCalendar();
+		this.profile = profile;
 	}
 
 	public void setAuthor(String author) {
@@ -114,6 +123,7 @@ public class Post {
 
 	public void setProfile(Profile profile) {
 		this.profile = profile;
+		this.parentProfileName = profile.getProfileName();
 	}
 
 	public void setLinks(List<Link> links) {

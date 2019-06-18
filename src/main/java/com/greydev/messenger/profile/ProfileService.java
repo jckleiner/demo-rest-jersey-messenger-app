@@ -1,5 +1,6 @@
 package com.greydev.messenger.profile;
 
+import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
@@ -28,12 +29,23 @@ public class ProfileService {
 	// profileName is required
 	public Profile addProfile(Profile profile) throws InvalidRequestDataException {
 
+		// Handling bi-directional multichild relationships
+		profile.getPosts().forEach(post -> {
+			post.setId(null);
+			post.setProfile(profile);
+			post.getComments().forEach(comment -> {
+				comment.setId(null);
+				comment.setPost(post);
+			});
+		});
+
 		if (!isProfileValid(profile) || doesProfileNameExist(profile.getProfileName())) {
 			throw new InvalidRequestDataException("POST", "/profiles");
 		}
-		Profile newProfile = new Profile(profile.getProfileName(), profile.getFirstName(), profile.getLastName());
-		ProfileDao.addProfile(newProfile);
-		return newProfile;
+		//		Profile newProfile = new Profile(profile.getProfileName(), profile.getFirstName(), profile.getLastName());
+		profile.setCreated(new Date());
+		ProfileDao.addProfile(profile);
+		return profile;
 	}
 
 	public Profile updateProfile(String queryParamProfileName, Profile profile)

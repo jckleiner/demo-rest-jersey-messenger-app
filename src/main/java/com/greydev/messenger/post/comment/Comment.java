@@ -46,10 +46,10 @@ public class Comment {
 	}
 
 	public Long getParentPostId() {
-		System.out.println("trying to access parent post id...");
-		if (post != null) { // is not set when we receive a request with a comment body
+		if (post != null) { // is not set when we receive a request with a comment body as a payload
 			return post.getId();
 		}
+		System.out.println("parentPost is null inside Comment...");
 		return parentPostId;
 	}
 
