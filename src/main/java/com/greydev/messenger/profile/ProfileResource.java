@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 
 import com.greydev.messenger.exception.DataNotFoundException;
 import com.greydev.messenger.exception.InvalidRequestDataException;
+import com.greydev.messenger.post.PostResource;
 
 @Path("/profiles")
 @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
@@ -58,6 +59,12 @@ public class ProfileResource {
 	public Profile deleteProfile(@PathParam("profileName") String profileName) throws DataNotFoundException {
 		LOG.info("DELETE: deleteProfile(Name: {})", profileName);
 		return profileService.deleteProfile(profileName);
+	}
+
+	// no parameter means: for all methods.
+	@Path("/{profileName}/posts")
+	public PostResource getPosts(@PathParam("profileName") String profileName) {
+		return new PostResource();
 	}
 
 }
