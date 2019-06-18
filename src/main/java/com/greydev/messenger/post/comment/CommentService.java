@@ -33,37 +33,18 @@ public class CommentService {
 	}
 
 	public Comment addComment(Long postId, Comment comment) throws InvalidRequestDataException, DataNotFoundException {
-		if (!isCommentValid(comment)) {
-			throw new InvalidRequestDataException("POST", "/posts/" + postId + "/comments/");
-		}
-		if (!doesPostExist(postId)) {
-			throw new DataNotFoundException("POST", "/posts/" + postId + "/comments/");
-		}
+		checkRequestValidity(postId, comment);
 		comment.setId(null);
 		comment.setCreated(new GregorianCalendar());
 		CommentDao.addCommentToPost(postId, comment);
 		return comment;
 	}
 
-	// TODO 
-	public Comment addCommentNewEndpoint(Comment comment) throws InvalidRequestDataException, DataNotFoundException {
-		Long postId = comment.getParentPostId();
-		return addComment(postId, comment);
-
-	}
-
 	public Comment updateComment(Long postId, Long commentId, Comment comment)
 			throws DataNotFoundException, InvalidRequestDataException {
 
 		comment.setId(commentId); // use the given comment id from the URL
-		if (!isCommentValid(comment)) {
-			throw new InvalidRequestDataException("PUT", "/posts/" + postId + "/comments/" + commentId);
-		}
-		System.out.println("POST ID: " + postId);
-		System.out.println(doesPostExist(postId));
-		if (!doesPostExist(postId)) {
-			throw new DataNotFoundException("PUT", "/posts/" + postId);
-		}
+		checkRequestValidity(postId, comment);
 		/* if there is no comment with the given id, add a new comment with that id
 		 * We use a custom id generator, so if the Entity has already an id set,
 		 * it will use that when saving it to the DB. If it's null then a new one is generated.
@@ -83,6 +64,18 @@ public class CommentService {
 			throw new DataNotFoundException("DELETE", "posts/" + postId + "/comments/" + commentId);
 		}
 		return deletedComment;
+	}
+
+	private void checkRequestValidity(Long postId, Comment comment) throws InvalidRequestDataException, DataNotFoundException {
+		if (postId == null) {
+			throw new InvalidRequestDataException("POST", "No parent post id was provided.");
+		}
+		if (!isCommentValid(comment)) {
+			throw new InvalidRequestDataException("POST", "/posts/" + postId + "/comments/");
+		}
+		if (!doesPostExist(postId)) {
+			throw new DataNotFoundException("POST", "/posts/" + postId + "/comments/");
+		}
 	}
 
 	// mandatory properties: Author, Text
