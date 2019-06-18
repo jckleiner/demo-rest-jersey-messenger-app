@@ -80,6 +80,9 @@ public class PostResource {
 	public Post updatePost(@PathParam("profileName") String profileName, @PathParam("postId") Long postId, Post post)
 			throws InvalidRequestDataException {
 		LOG.info("PUT: updatePost(id: {})", postId);
+		if (profileName == null) {
+			profileName = post.getParentProfileName();
+		}
 		System.out.printf("PUT: updatePost(author: %s)\n", post.getAuthor());
 		return postService.updatePost(profileName, postId, post);
 	}

@@ -66,9 +66,14 @@ public class PostService {
 		if (parentProfileName == null) {
 			throw new InvalidRequestDataException("POST", "parentProfileName cant be null");
 		}
+		if (!doesProfileExist(parentProfileName)) {
+			throw new InvalidRequestDataException("POST", "parentProfileName is not found");
+
+		}
 
 		// ignore the id inside the received post, use the url param id
 		post.setId(queryParamPostId);
+		post.setProfile(ProfileDao.getProfile(parentProfileName));
 		post.getComments().forEach(comment -> {
 			System.out.println("setting parent post inside comment...");
 			comment.setPost(post);
