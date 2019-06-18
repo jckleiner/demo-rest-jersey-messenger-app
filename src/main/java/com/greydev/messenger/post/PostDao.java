@@ -11,6 +11,7 @@ import org.hibernate.Transaction;
 import com.greydev.messenger.SessionFactorySingleton;
 import com.greydev.messenger.post.comment.Comment;
 import com.greydev.messenger.post.comment.CommentDao;
+import com.greydev.messenger.profile.Profile;
 
 public class PostDao {
 
@@ -38,13 +39,16 @@ public class PostDao {
 
 	}
 
-	public static Long addPost(Post post) {
+	public static Long addPostToProfile(String parentProfileName, Post post) {
 		Long savedEntityId = null;
 		final Session session = factory.openSession();
 		Transaction transaction = null;
 		try {
 			transaction = session.beginTransaction();
 
+			Profile parentProfile = session.get(Profile.class, parentProfileName);
+			parentProfile.getPosts().add(post);
+			post.setProfile(parentProfile);
 			// this also saves the Comment collection inside the post object
 			savedEntityId = (Long) session.save(post);
 

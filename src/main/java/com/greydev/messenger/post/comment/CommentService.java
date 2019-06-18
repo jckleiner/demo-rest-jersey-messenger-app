@@ -22,11 +22,6 @@ public class CommentService {
 		return comments;
 	}
 
-	public Comment getComment(Long postId, Long commentId) {
-		Comment comment = CommentDao.getComment(commentId);
-		return comment;
-	}
-
 	public Comment getComment(Long commentId) {
 		Comment comment = CommentDao.getComment(commentId);
 		return comment;
@@ -58,10 +53,10 @@ public class CommentService {
 		return comment;
 	}
 
-	public Comment deleteComment(Long postId, Long commentId) throws DataNotFoundException {
+	public Comment deleteComment(Long commentId) throws DataNotFoundException {
 		Comment deletedComment = CommentDao.deleteComment(commentId);
 		if (deletedComment == null) {
-			throw new DataNotFoundException("DELETE", "posts/" + postId + "/comments/" + commentId);
+			throw new DataNotFoundException("DELETE", "/comments/" + commentId);
 		}
 		return deletedComment;
 	}

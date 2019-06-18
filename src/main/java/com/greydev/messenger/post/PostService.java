@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import com.greydev.messenger.exception.DataNotFoundException;
 import com.greydev.messenger.exception.InvalidRequestDataException;
 import com.greydev.messenger.post.comment.CommentResource;
+import com.greydev.messenger.profile.ProfileDao;
 import com.greydev.messenger.profile.ProfileResource;
 
 //TODO writing URI's manually inside exceptions seems bad, fix
@@ -33,7 +34,14 @@ public class PostService {
 		return post;
 	}
 
-	public Post addPost(UriInfo uriInfo, Post post) throws InvalidRequestDataException {
+	public Post addPost(UriInfo uriInfo, String parentProfileName, Post post) throws InvalidRequestDataException {
+
+		if (parentProfileName == null) {
+			throw new InvalidRequestDataException("POST", "parentProfileName cant be null");
+		}
+		if (!doesProfileExist(parentProfileName)) {
+			throw new InvalidRequestDataException("POST", "parentProfileName is not found");
+		}
 
 		post.setId(null); // don't use the id given by the user, let hibernate generate a new one by setting it to null
 		post.getComments().forEach(comment -> {
@@ -49,11 +57,16 @@ public class PostService {
 		//		newMessage.addLink(getUriForProfile(uriInfo, newMessage), "profile");
 		//		newMessage.addLink(getUriForComments(uriInfo, newMessage), "comments");
 
-		post.setId(PostDao.addPost(post));
+		post.setId(PostDao.addPostToProfile(parentProfileName, post));
 		return post;
 	}
 
-	public Post updatePost(Long queryParamPostId, Post post) throws InvalidRequestDataException {
+	public Post updatePost(String parentProfileName, Long queryParamPostId, Post post) throws InvalidRequestDataException {
+
+		if (parentProfileName == null) {
+			throw new InvalidRequestDataException("POST", "parentProfileName cant be null");
+		}
+
 		// ignore the id inside the received post, use the url param id
 		post.setId(queryParamPostId);
 		post.getComments().forEach(comment -> {
@@ -73,7 +86,7 @@ public class PostService {
 		else {
 			System.out.println(" * * * post id: " + post.getId());
 			System.out.println(" * * * comment0 id: " + post.getComments().get(0).getId());
-			post.setId(PostDao.addPost(post));
+			post.setId(PostDao.addPostToProfile(parentProfileName, post));
 			System.out.println(" * * * post id: " + post.getId());
 			System.out.println(" * * * comment0 id: " + post.getComments().get(0).getId());
 			return post;
@@ -123,11 +136,15 @@ public class PostService {
 
 	// mandatory properties: Author, Text
 	public boolean isPostValid(Post post) {
-		return ObjectUtils.allNotNull(post.getAuthor(), post.getText(), post.getProfile());
+		return ObjectUtils.allNotNull(post.getAuthor(), post.getText(), post.getParentProfileName());
 	}
 
 	public boolean doesPostExist(Long id) {
 		return (PostDao.getPost(id) != null);
+	}
+
+	public boolean doesProfileExist(String profileName) {
+		return (ProfileDao.getProfile(profileName) != null);
 	}
 
 }

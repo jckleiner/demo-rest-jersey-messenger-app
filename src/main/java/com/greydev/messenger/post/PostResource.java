@@ -54,16 +54,21 @@ public class PostResource {
 
 	@GET
 	@Path("/{postId}")
-	public Post getPost(@PathParam("postId") Long postId) throws DataNotFoundException, UnknownHostException {
+	public Post getPost(@PathParam("postId") Long postId)
+			throws DataNotFoundException, UnknownHostException {
 		LOG.info("GET: getPost(id: {})", postId);
-		return postService.getPost(postId);
+		return postService.getPost(postId); // post always has a unique id, no need for profileName
 	}
 
 	@POST
-	public Response addPost(@Context UriInfo uriInfo, Post post)
+	public Response addPost(@PathParam("profileName") String profileName, @Context UriInfo uriInfo, Post post)
 			throws URISyntaxException, InvalidRequestDataException {
 		LOG.info("POST: addPost(post: {}, {})", post.getAuthor(), post.getText());
-		Post addedPost = postService.addPost(uriInfo, post);
+		if (profileName == null) {
+			profileName = post.getParentProfileName();
+		}
+
+		Post addedPost = postService.addPost(uriInfo, profileName, post);
 
 		String id = Long.toString(addedPost.getId());
 		URI locationUri = uriInfo.getAbsolutePathBuilder().path(id).build();
@@ -72,21 +77,24 @@ public class PostResource {
 
 	@PUT
 	@Path("/{postId}")
-	public Post updatePost(@PathParam("postId") Long postId, Post post)
+	public Post updatePost(@PathParam("profileName") String profileName, @PathParam("postId") Long postId, Post post)
 			throws InvalidRequestDataException {
 		LOG.info("PUT: updatePost(id: {})", postId);
 		System.out.printf("PUT: updatePost(author: %s)\n", post.getAuthor());
-		return postService.updatePost(postId, post);
+		return postService.updatePost(profileName, postId, post);
 	}
 
 	@DELETE
 	@Path("/{postId}")
 	public Post deletePost(@PathParam("postId") Long postId) throws DataNotFoundException {
 		LOG.info("DELETE: deletePost(id: {})", postId);
-		return postService.deletePost(postId);
+		return postService.deletePost(postId); // post always has a unique id, no need for profileName
 	}
 
 	// no parameter means: for all methods.
+	// http://localhost:8080/messenger/api/posts/1/comments/2 -> this request will trigger this method.
+	// even though the @Path annotation below DOES NOT CONTAIN '1/comments/2', 
+	// the whole request will be redirected to CommentResource!
 	@Path("{postId}/comments")
 	public CommentResource getCommentResource() {
 		LOG.info("getAllComments");

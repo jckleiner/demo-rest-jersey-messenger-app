@@ -45,13 +45,8 @@ public class CommentResource {
 
 	@GET
 	@Path("{commentId}")
-	public Comment getComment(@PathParam("postId") Long postId, @PathParam("commentId") Long commentId) {
-
-		if (postId == null) { // @GET - path: http://localhost:8080/messenger/api/comments/4
-			LOG.info(" *** DIRECT ACCESS TO ONE COMMENT *** ");
-			return commentService.getComment(commentId);
-		}
-		return commentService.getComment(postId, commentId); // @GET - path: http://localhost:8080/messenger/api/posts/2/comments/4
+	public Comment getComment(@PathParam("commentId") Long commentId) {
+		return commentService.getComment(commentId); // comment alwasy has a unique id, no need for postId
 	}
 
 	@POST
@@ -83,16 +78,9 @@ public class CommentResource {
 
 	@DELETE
 	@Path("{commentId}")
-	public Comment deleteComment(@PathParam("postId") Long postId, @PathParam("commentId") Long commentId, Comment comment)
+	public Comment deleteComment(@PathParam("commentId") Long commentId, Comment comment)
 			throws DataNotFoundException {
-
-		if (postId == null) {
-			LOG.info(" *** DIRECT POST TO COMMENTS *** ");
-			postId = comment.getParentPostId();
-			return commentService.deleteComment(postId, commentId);
-		}
-
-		return commentService.deleteComment(postId, commentId);
+		return commentService.deleteComment(commentId); // comment alwasy has a unique id, no need for postId
 	}
 
 }
