@@ -88,14 +88,8 @@ public class PostService {
 			PostDao.updatePost(post);
 			return post;
 		}
-		else {
-			System.out.println(" * * * post id: " + post.getId());
-			System.out.println(" * * * comment0 id: " + post.getComments().get(0).getId());
-			post.setId(PostDao.addPostToProfile(parentProfileName, post));
-			System.out.println(" * * * post id: " + post.getId());
-			System.out.println(" * * * comment0 id: " + post.getComments().get(0).getId());
-			return post;
-		}
+		post.setId(PostDao.addPostToProfile(parentProfileName, post));
+		return post;
 	}
 
 	public Post deletePost(Long id) throws DataNotFoundException {

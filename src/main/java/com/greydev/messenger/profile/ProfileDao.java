@@ -9,6 +9,7 @@ import org.hibernate.Transaction;
 
 import com.greydev.messenger.SessionFactorySingleton;
 import com.greydev.messenger.post.Post;
+import com.greydev.messenger.post.PostDao;
 import com.greydev.messenger.post.comment.Comment;
 
 public class ProfileDao {
@@ -102,6 +103,36 @@ public class ProfileDao {
 
 	}
 
+	public static Profile updateProfile(Profile profile) {
+
+		final Session session = factory.openSession();
+		Transaction transaction = null;
+		try {
+			transaction = session.beginTransaction();
+
+			// delete childs from entity which will be updated
+			// also delete comments or is it enough to delete post?
+			List<Post> postsToDelete = PostDao.getPostsForProfile(profile.getProfileName());
+			postsToDelete.forEach(post -> {
+				session.delete(post);
+			});
+
+			// TODO handle child entitiesa
+			session.update(profile);
+
+			transaction.commit();
+			session.close();
+		} catch (Exception e) {
+			if (transaction != null) {
+				transaction.rollback();
+			}
+			e.printStackTrace();
+
+		}
+		return null;
+
+	}
+
 	public static Profile deleteProfile(String profileName) {
 		Profile profileToDelete = null;
 		final Session session = factory.openSession();
@@ -126,29 +157,6 @@ public class ProfileDao {
 			profileToDelete = null;
 		}
 		return profileToDelete;
-	}
-
-	public static Profile updateProfile(Profile profile) {
-
-		final Session session = factory.openSession();
-		Transaction transaction = null;
-		try {
-			transaction = session.beginTransaction();
-
-			// TODO handle child entities
-			session.save(profile);
-
-			transaction.commit();
-			session.close();
-		} catch (Exception e) {
-			if (transaction != null) {
-				transaction.rollback();
-			}
-			e.printStackTrace();
-
-		}
-		return null;
-
 	}
 
 }
