@@ -135,6 +135,27 @@ public class PostDao {
 		return results;
 	}
 
+	public static List<Post> getPostsForProfile(String profileName) {
+		List<Post> results = null;
+		final Session session = factory.openSession();
+		Transaction transaction = null;
+		try {
+			transaction = session.beginTransaction();
+
+			results = session.createQuery("from Post where profile.profileName='" + profileName + "'").list();
+			//			results = session.createQuery("from Post").list();
+
+			transaction.commit();
+			session.close();
+		} catch (Exception e) {
+			if (transaction != null) {
+				transaction.rollback();
+			}
+			e.printStackTrace();
+		}
+		return results;
+	}
+
 	public static List<Post> getAllPostsForYear(int year) {
 		List<Post> resultSet = new ArrayList<>();
 

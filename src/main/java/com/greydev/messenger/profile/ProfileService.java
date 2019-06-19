@@ -50,18 +50,36 @@ public class ProfileService {
 
 	public Profile updateProfile(String queryParamProfileName, Profile profile)
 			throws InvalidRequestDataException, DataNotFoundException {
+
+		if (profile == null) {
+			throw new InvalidRequestDataException("POST", "profile cant be null");
+		}
+		if (queryParamProfileName == null) {
+			throw new InvalidRequestDataException("POST", "queryParamProfileName cant be null");
+		}
 		// replace the queryParameterName with the profile name if it exist
 		profile.setProfileName(queryParamProfileName);
 
 		if (!isProfileValid(profile)) {
 			throw new InvalidRequestDataException("PUT", "/profiles");
 		}
-		else if (!doesProfileNameExist(profile.getProfileName())) {
-			throw new DataNotFoundException("PUT", "/profiles/" + profile.getProfileName());
+
+		profile.setProfileName(queryParamProfileName); // use the name given in the URL
+		profile.getPosts().forEach(post -> { // set bi-directional relations
+			post.setProfile(profile);
+			post.setId(null);
+			post.getComments().forEach(comment -> {
+				comment.setPost(post);
+				comment.setId(null);
+			});
+		});
+
+		if (doesProfileNameExist(profile.getProfileName())) {
+			ProfileDao.updateProfile(profile);
+			return profile;
 		}
-		Profile newProfile = new Profile(profile.getProfileName(), profile.getFirstName(), profile.getLastName());
-		ProfileDao.updateProfile(newProfile);
-		return newProfile;
+		ProfileDao.addProfile(profile);
+		return profile;
 	}
 
 	public Profile deleteProfile(String profileName) throws DataNotFoundException {
