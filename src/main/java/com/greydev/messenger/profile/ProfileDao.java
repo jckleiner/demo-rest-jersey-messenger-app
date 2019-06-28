@@ -1,6 +1,5 @@
 package com.greydev.messenger.profile;
 
-import java.util.GregorianCalendar;
 import java.util.List;
 
 import org.hibernate.Session;
@@ -21,8 +20,8 @@ public class ProfileDao {
 
 		Profile profile1 = new Profile("Such profile", "pol", "pia");
 
-		Post post1 = new Post("can", "Such a lovely weather today!", new GregorianCalendar(2015, 11, 11), profile1);
-		Post post2 = new Post("jason", "I own a grocery store!", new GregorianCalendar(2011, 04, 04), profile1);
+		Post post1 = new Post("can", "Such a lovely weather today!", profile1);
+		Post post2 = new Post("jason", "I own a grocery store!", profile1);
 
 		post1.getComments().add(new Comment("Johny", "First Comment", post1));
 		post1.getComments().add(new Comment("Emily", "Grocery store", post1));
@@ -104,20 +103,17 @@ public class ProfileDao {
 	}
 
 	public static Profile updateProfile(Profile profile) {
-
 		final Session session = factory.openSession();
 		Transaction transaction = null;
 		try {
 			transaction = session.beginTransaction();
 
 			// delete childs from entity which will be updated
-			// also delete comments or is it enough to delete post?
 			List<Post> postsToDelete = PostDao.getPostsForProfile(profile.getProfileName());
 			postsToDelete.forEach(post -> {
-				session.delete(post);
+				session.delete(post); // deleting a post also deletes all child comments, cascade.ALL ???
 			});
 
-			// TODO handle child entitiesa
 			session.update(profile);
 
 			transaction.commit();

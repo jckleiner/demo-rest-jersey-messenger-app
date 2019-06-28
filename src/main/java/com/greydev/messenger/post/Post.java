@@ -1,7 +1,7 @@
 package com.greydev.messenger.post;
 
 import java.util.ArrayList;
-import java.util.GregorianCalendar;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -12,11 +12,15 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import com.greydev.messenger.link.Link;
 import com.greydev.messenger.post.comment.Comment;
@@ -26,7 +30,6 @@ import com.greydev.messenger.profile.Profile;
 @XmlRootElement
 public class Post {
 
-	private GregorianCalendar created;
 	@Id
 	@GenericGenerator(name = "myCustomIdGenerator", strategy = "com.greydev.messenger.UseIdOrGenerate")
 	@GeneratedValue(generator = "myCustomIdGenerator")
@@ -44,6 +47,24 @@ public class Post {
 	private Profile profile;
 	@Transient
 	private String parentProfileName;
+
+	@CreationTimestamp
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "created", updatable = false)
+	private Date created;
+
+	@UpdateTimestamp
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "lastUpdated")
+	private Date lastUpdated;
+
+	public Date getLastUpdated() {
+		return lastUpdated;
+	}
+
+	public void setLastUpdated(Date lastUpdated) {
+		this.lastUpdated = lastUpdated;
+	}
 
 	public String getParentProfileName() {
 		if (this.profile != null) { // is not set when we receive a request with a comment body as a payload
@@ -68,10 +89,9 @@ public class Post {
 		this.comments = comments;
 	}
 
-	public Post(String author, String text, GregorianCalendar date, Profile profile) {
+	public Post(String author, String text, Profile profile) {
 		this.author = author;
 		this.text = text;
-		this.created = date;
 		this.profile = profile;
 	}
 
@@ -83,7 +103,7 @@ public class Post {
 		this.id = id;
 	}
 
-	public GregorianCalendar getCreated() {
+	public Date getCreated() {
 		return created;
 	}
 
@@ -103,7 +123,7 @@ public class Post {
 		return text;
 	}
 
-	public void setCreated(GregorianCalendar date) {
+	public void setCreated(Date date) {
 		created = date;
 	}
 

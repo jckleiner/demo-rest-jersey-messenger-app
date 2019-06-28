@@ -1,16 +1,20 @@
 package com.greydev.messenger.post.comment;
 
-import java.util.GregorianCalendar;
+import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlTransient;
 
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import com.greydev.messenger.post.Post;
 
@@ -22,8 +26,6 @@ public class Comment {
 	@GeneratedValue(generator = "myCustomIdGenerator")
 	@Column(name = "comment_id")
 	private Long id;
-	@Column(name = "created")
-	private GregorianCalendar created;
 	@Column(name = "text")
 	private String text;
 	@Column(name = "author")
@@ -33,12 +35,29 @@ public class Comment {
 	@Transient
 	private Long parentPostId;
 
+	@CreationTimestamp
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "created", updatable = false)
+	private Date created;
+
+	@UpdateTimestamp
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "lastUpdated")
+	private Date lastUpdated;
+
+	public Date getLastUpdated() {
+		return lastUpdated;
+	}
+
+	public void setLastUpdated(Date lastUpdated) {
+		this.lastUpdated = lastUpdated;
+	}
+
 	public Comment() {
 	}
 
 	public Comment(String author, String text, Post post) {
 		super();
-		this.created = new GregorianCalendar();
 		this.text = text;
 		this.author = author;
 		this.post = post;
@@ -67,11 +86,11 @@ public class Comment {
 		this.parentPostId = post.getId();
 	}
 
-	public GregorianCalendar getCreated() {
+	public Date getCreated() {
 		return created;
 	}
 
-	public void setCreated(GregorianCalendar created) {
+	public void setCreated(Date created) {
 		this.created = created;
 	}
 
