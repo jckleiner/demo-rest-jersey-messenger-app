@@ -10,7 +10,12 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.xml.bind.annotation.XmlRootElement;
+
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import com.greydev.messenger.post.Post;
 
@@ -25,15 +30,30 @@ public class Profile {
 	private String firstName;
 	@Column(name = "last_name")
 	private String lastName;
-	@Column(name = "created")
-	private Date created;
 
 	// TODO handle bi-directional relations properly
-	@Column(name = "created")
 	//	@LazyCollection(LazyCollectionOption.FALSE)
 	// 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "profile")
 	private Set<Post> posts = new HashSet<>();
+
+	@CreationTimestamp
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "created", updatable = false)
+	private Date created;
+
+	@UpdateTimestamp
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "lastUpdated")
+	private Date lastUpdated;
+
+	public Date getLastUpdated() {
+		return lastUpdated;
+	}
+
+	public void setLastUpdated(Date lastUpdated) {
+		this.lastUpdated = lastUpdated;
+	}
 
 	public Profile() {
 

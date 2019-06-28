@@ -1,7 +1,6 @@
 package com.greydev.messenger.post;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 import org.hibernate.Session;
@@ -143,7 +142,6 @@ public class PostDao {
 			transaction = session.beginTransaction();
 
 			results = session.createQuery("from Post where profile.profileName='" + profileName + "'").list();
-			//			results = session.createQuery("from Post").list();
 
 			transaction.commit();
 			session.close();
@@ -159,11 +157,11 @@ public class PostDao {
 	public static List<Post> getAllPostsForYear(int year) {
 		List<Post> resultSet = new ArrayList<>();
 
-		for (Post post : getAllPostsAsList()) {
-			if (post.getCreated().get(Calendar.YEAR) == year) {
-				resultSet.add(post);
-			}
-		}
+		//		for (Post post : getAllPostsAsList()) {
+		//			if (post.getCreated().get(Calendar.YEAR) == year) {
+		//				resultSet.add(post);
+		//			}
+		//		}
 		return resultSet;
 	}
 

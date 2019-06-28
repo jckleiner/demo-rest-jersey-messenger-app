@@ -1,6 +1,5 @@
 package com.greydev.messenger.post.comment;
 
-import java.util.GregorianCalendar;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
@@ -30,7 +29,6 @@ public class CommentService {
 	public Comment addComment(Long postId, Comment comment) throws InvalidRequestDataException, DataNotFoundException {
 		checkRequestValidity(postId, comment);
 		comment.setId(null);
-		comment.setCreated(new GregorianCalendar());
 		CommentDao.addCommentToPost(postId, comment);
 		return comment;
 	}
