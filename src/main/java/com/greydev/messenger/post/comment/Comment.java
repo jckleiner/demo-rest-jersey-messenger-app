@@ -10,6 +10,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
+import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
 import org.hibernate.annotations.CreationTimestamp;
@@ -19,6 +20,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 import com.greydev.messenger.post.Post;
 
 @Entity
+@XmlRootElement
 public class Comment {
 
 	@Id

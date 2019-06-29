@@ -22,8 +22,9 @@ import com.greydev.messenger.exception.InvalidRequestDataException;
 
 // TODO how to expose comment resource also under .../comments and not just .../messages/x/comments?
 @Path("/comments") // this path is ignored if parent calles this resource with a different url
-@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+//the order is important! If no 'Accept' header is specified, jersey will send the first media type back
+@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
 public class CommentResource {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CommentResource.class);
@@ -38,6 +39,7 @@ public class CommentResource {
 		// when .../api/comments is called, Client wants to get all the comments.
 		if (postId == null) { // @GET - path: http://localhost:8080/messenger/api/comments
 			LOG.info(" *** DIRECT ACCESS TO ALL COMMENTS *** ");
+
 			return commentService.getAllCommentsForEveryPost();
 		}
 		return commentService.getCommentsForPost(postId); // @GET - path: http://localhost:8080/messenger/api/posts/1/comments

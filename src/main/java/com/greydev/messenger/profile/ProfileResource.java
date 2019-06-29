@@ -20,8 +20,10 @@ import com.greydev.messenger.exception.InvalidRequestDataException;
 import com.greydev.messenger.post.PostResource;
 
 @Path("/profiles")
-@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+//@Produces({ "application/json;qs=1", "application/xml;qs=.5" })	// jersey will prefer to send json
+//the order is important! If no 'Accept' header is specified, jersey will send the first media type back
+@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
 public class ProfileResource {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ProfileResource.class);
