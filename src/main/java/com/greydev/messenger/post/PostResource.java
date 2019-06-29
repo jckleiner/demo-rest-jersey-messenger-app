@@ -28,8 +28,9 @@ import com.greydev.messenger.filter.PostFilterBean;
 import com.greydev.messenger.post.comment.CommentResource;
 
 @Path("/posts")
-@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+//the order is important! If no 'Accept' header is specified, jersey will send the first media type back
+@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
 public class PostResource {
 
 	private static final Logger LOG = LoggerFactory.getLogger(PostResource.class);
