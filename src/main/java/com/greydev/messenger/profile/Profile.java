@@ -35,6 +35,7 @@ public class Profile {
 	//	@LazyCollection(LazyCollectionOption.FALSE)
 	// 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "profile")
+	//	@Column(name = "xxx") // this is ignored
 	private Set<Post> posts = new HashSet<>();
 
 	@CreationTimestamp
@@ -64,15 +65,6 @@ public class Profile {
 		this.profileName = profileName;
 		this.firstName = firstName;
 		this.lastName = lastName;
-		this.created = new Date();
-	}
-
-	public Profile(String profileName, String firstName, String lastName, Date date) {
-		super();
-		this.profileName = profileName;
-		this.firstName = firstName;
-		this.lastName = lastName;
-		this.created = date;
 	}
 
 	public String getProfileName() {
