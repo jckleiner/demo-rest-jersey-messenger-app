@@ -18,24 +18,45 @@ public class ProfileDao {
 	//saving some dummy posts and profiles to the database
 	static {
 
-		Profile profile1 = new Profile("Such profile", "pol", "pia");
+		Profile profile1 = new Profile("such", "pol", "pia");
+		Profile profile2 = new Profile("much", "pol123", "pia123");
 
 		Post post1 = new Post("can", "Such a lovely weather today!", profile1);
-		Post post2 = new Post("jason", "I own a grocery store!", profile1);
+		Post post2 = new Post("jason", "I own a grocery store!", profile2);
+		Post post3 = new Post("jason", "I own a grocery store!", profile2);
 
 		post1.getComments().add(new Comment("Johny", "First Comment", post1));
-		post1.getComments().add(new Comment("Emily", "Grocery store", post1));
-
+		post2.getComments().add(new Comment("Emily", "Grocery store", post2));
+		//
 		post2.getComments().add(new Comment("Sally", "Hey there", post2));
 		post2.getComments().add(new Comment("Sally2", "Hey there2", post2));
 
 		// set bi-directional relationships
 		profile1.getPosts().add(post1);
 		profile1.getPosts().add(post2);
-		post1.setProfile(profile1);
-		post2.setProfile(profile1);
+
+		profile2.getPosts().add(post3);
+
+		profile1.getPosts().forEach(post -> {
+			post.setId(null);
+			post.setProfile(profile1);
+			post.getComments().forEach(comment -> {
+				comment.setId(null);
+				comment.setPost(post);
+			});
+		});
+
+		profile2.getPosts().forEach(post -> {
+			post.setId(null);
+			post.setProfile(profile2);
+			post.getComments().forEach(comment -> {
+				comment.setId(null);
+				comment.setPost(post);
+			});
+		});
 
 		ProfileDao.addProfile(profile1);
+		ProfileDao.addProfile(profile2);
 
 	}
 
@@ -87,6 +108,8 @@ public class ProfileDao {
 		Transaction transaction = null;
 		try {
 			transaction = session.beginTransaction();
+
+			System.out.println("  *** addProfile ***");
 
 			// TODO handle child entities
 			session.save(profile);

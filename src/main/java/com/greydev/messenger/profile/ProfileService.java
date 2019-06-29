@@ -1,6 +1,5 @@
 package com.greydev.messenger.profile;
 
-import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
@@ -23,7 +22,7 @@ public class ProfileService {
 		if (newProfile == null) {
 			throw new DataNotFoundException("GET", "/profiles/" + profileName);
 		}
-		return ProfileDao.getProfile(profileName);
+		return newProfile;
 	}
 
 	// profileName is required
@@ -42,8 +41,6 @@ public class ProfileService {
 		if (!isProfileValid(profile) || doesProfileNameExist(profile.getProfileName())) {
 			throw new InvalidRequestDataException("POST", "/profiles");
 		}
-		//		Profile newProfile = new Profile(profile.getProfileName(), profile.getFirstName(), profile.getLastName());
-		profile.setCreated(new Date());
 		ProfileDao.addProfile(profile);
 		return profile;
 	}
