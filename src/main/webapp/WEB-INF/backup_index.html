@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>MessengerFrontend</title>
+  <base href="./">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+<link rel="stylesheet" href="styles.3ff695c00d717f2d2a11.css"></head>
+<body>
+  *** Front end for messenger ***
+  
+  <a class="black-text" onclick="test123()">All Profiles</a>
+  <br>
+  <a class="black-text" href="api/posts">All Posts</a>
+  <br>
+  <a class="black-text" href="api/comments">All Comments</a>
+  
+  <br> 
+  <br> 
+  <br> 
+
+  <button type="button" onclick="test123()"> test </button>
+  
+  <br> 
+  <br> 
+  <br> 
+
+  <div id="responseDisplayDiv">
+    such div
+  </div>
+  
+  <script>
+  
+  function test123() {
+    console.log("clicked!");
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+      if (this.readyState == 4 && this.status == 200) {
+        document.getElementById("responseDisplayDiv").innerHTML = this.responseText;
+      }
+    };
+    xhttp.open("GET", "http://81.169.219.191:8080/messenger/api/profiles", true);
+    xhttp.send();
+  }
+
+   </script>
+<br> <br> <br> <br> <br> <br> <br> 
+  end of file
+  
+  <app-root></app-root>
+<script src="runtime-es2015.858f8dd898b75fe86926.js" type="module"></script><script src="polyfills-es2015.27661dfa98f6332c27dc.js" type="module"></script><script src="runtime-es5.741402d1d47331ce975c.js" nomodule></script><script src="polyfills-es5.7f43b971448d2fb49202.js" nomodule></script><script src="main-es2015.6ba1bfc24aa9a72e40ef.js" type="module"></script><script src="main-es5.ae626d904a88e346c6e2.js" nomodule></script></body>
+</html>
