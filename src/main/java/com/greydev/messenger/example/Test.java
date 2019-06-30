@@ -15,4 +15,5 @@ public class Test {
 	public Date getMyDate() {
 		return Calendar.getInstance().getTime();
 	}
+
 }
